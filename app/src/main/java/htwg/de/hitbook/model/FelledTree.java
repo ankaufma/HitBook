@@ -89,6 +89,6 @@ public class FelledTree {
     }
 
     public double getVolume(){
-        return (diameter*diameter)/4*Math.PI*height;
+        return (this.diameter*this.diameter)/40000*Math.PI*this.height;
     }
 }
