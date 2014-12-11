@@ -10,8 +10,8 @@ public class FelledTree {
     private String areaDescription;
     private String latitude;
     private String longitude;
-    private double height;
-    private double diameter;
+    private double height; //in meters
+    private double diameter; //in centimeters
 
     public FelledTree(int id, String lumberjack, String team, String areaDescription, String latitude, String longitude, double height, double diameter) {
         this.id = id;
