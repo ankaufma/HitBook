@@ -6,15 +6,17 @@ package htwg.de.hitbook.model;
 public class FelledTree {
     private int id;
     private String lumberjack;
+    private String team;
     private String areaDescription;
     private String latitude;
     private String longitude;
     private double height;
     private double diameter;
 
-    public FelledTree(int id, String lumberjack, String areaDescription, String latitude, String longitude, double height, double diameter) {
+    public FelledTree(int id, String lumberjack, String team, String areaDescription, String latitude, String longitude, double height, double diameter) {
         this.id = id;
         this.lumberjack = lumberjack;
+        this.team = team;
         this.areaDescription = areaDescription;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -34,8 +36,16 @@ public class FelledTree {
         return lumberjack;
     }
 
+    public String getTeam(){
+        return team;
+    }
+
     public void setLumberjack(String lumberjack) {
         this.lumberjack = lumberjack;
+    }
+
+    public void setTeam(String team) {
+        this.team = team;
     }
 
     public String getAreaDescription() {
@@ -76,5 +86,9 @@ public class FelledTree {
 
     public void setDiameter(double diameter) {
         this.diameter = diameter;
+    }
+
+    public double getVolume(){
+        return (diameter*diameter)/4*Math.PI*height;
     }
 }
