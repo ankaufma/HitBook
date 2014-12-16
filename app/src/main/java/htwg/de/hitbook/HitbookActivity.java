@@ -16,6 +16,7 @@ public class HitbookActivity extends ActionBarActivity {
     private final int REQUEST_IMAGE_CAPTURE = 1;
     Button camera;
     ImageView imageView;
+    Bitmap imageBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class HitbookActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            imageBitmap = (Bitmap) extras.get("data");
             imageView.setImageBitmap(imageBitmap);
         }
     }
@@ -69,6 +70,7 @@ public class HitbookActivity extends ActionBarActivity {
 
     public void showMap() {
         Intent intent = new Intent(this, MapActivity.class);
+        intent.putExtra("Picture", imageBitmap);
         startActivity(intent);
     }
 }

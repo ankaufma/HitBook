@@ -1,6 +1,7 @@
 package htwg.de.hitbook;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -13,40 +14,49 @@ import android.view.MenuItem;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.*;
 
+import htwg.de.hitbook.service.GPSTracker;
+
 
 public class MapActivity extends ActionBarActivity {
     GoogleMap map;
-
-    private final LocationListener mLocationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(final Location location) {
-            //your code here
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-
-        }
-    };
+    GPSTracker gps;
+    Bitmap bmp;
+    double latitude;
+    double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        bmp = getIntent().getExtras().getParcelable("Picture");
+        gps = new GPSTracker(this);
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         map = mapFragment.getMap();
         map.setMyLocationEnabled(true);
+        while(!addTreeMarker()) addTreeMarker();
+    }
+
+    private boolean addTreeMarker() {
+        if(gps.canGetLocation()) {
+            latitude = gps.getLatitude();
+            longitude = gps.getLongitude();
+            gps.stopUsingGPS();
+            if(bmp != null) {
+                map.addMarker(new MarkerOptions().
+                        position(new LatLng(latitude, longitude)).
+                        title("Felled Tree").
+                        icon(BitmapDescriptorFactory.fromBitmap(bmp)));
+            } else {
+                map.addMarker(new MarkerOptions().
+                        position(new LatLng(latitude, longitude)).
+                        title("Felled Tree"));
+            }
+            return true;
+        } else {
+            gps.showSettingsAlert();
+            return false;
+        }
     }
 
     @Override
