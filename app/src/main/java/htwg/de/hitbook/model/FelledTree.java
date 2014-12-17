@@ -12,8 +12,9 @@ public class FelledTree {
     private String longitude;
     private double height; //in meters
     private double diameter; //in centimeters
+    private String date; // yyyy.mm.dd
 
-    public FelledTree(int id, String lumberjack, String team, String areaDescription, String latitude, String longitude, double height, double diameter) {
+    public FelledTree(int id, String lumberjack, String team, String areaDescription, String latitude, String longitude, double height, double diameter, String date) {
         this.id = id;
         this.lumberjack = lumberjack;
         this.team = team;
@@ -22,6 +23,8 @@ public class FelledTree {
         this.longitude = longitude;
         this.height = height;
         this.diameter = diameter;
+        this.date = date;
+
     }
 
     public int getId() {
@@ -86,6 +89,14 @@ public class FelledTree {
 
     public void setDiameter(double diameter) {
         this.diameter = diameter;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public double getVolume(){
