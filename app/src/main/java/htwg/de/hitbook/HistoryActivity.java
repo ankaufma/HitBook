@@ -33,18 +33,16 @@ public class HistoryActivity extends ActionBarActivity {
 
         dbAccess = new DatabaseAccess(this.getBaseContext());
 
+        dbAccess.deleteDatabase(this.getBaseContext());
+
         dbAccess.open();
-        dbAccess.createNewFelledTree("John","West","","123","345",8,80,"2014.12.17");
-        dbAccess.createNewFelledTree("Joe","West","","123","345",8,80,"2014.12.14");
-        dbAccess.createNewFelledTree("Jack","East","","123","345",8,80,"2014.10.20");
+        dbAccess.createNewFelledTree("John","West","","123","345",8,80);
+        dbAccess.createNewFelledTree("Joe","West","","123","345",8,80);
+        dbAccess.createNewFelledTree("Jack","East","","123","345",8,80);
 
         dates = dbAccess.getAllDates();
 
         dbAccess.close();
-
-        dates.add("Eins");
-        dates.add("Zwei");
-        dates.add("Drei");
 
         ArrayAdapter<String> aa = new ArrayAdapter<String>(HistoryActivity.this,android.R.layout.simple_list_item_1,dates);
         ListView lv = (ListView) findViewById(R.id.listView);
