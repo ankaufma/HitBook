@@ -46,6 +46,10 @@ public class SQLiteHelper extends SQLiteOpenHelper{
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    public void deleteDatabase(Context context){
+        context.deleteDatabase(DATABASE_NAME);
+    }
+
     public String[] getColumns(){
         return COLUMNS;
     }
