@@ -6,9 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.TooManyListenersException;
 
 import htwg.de.hitbook.model.FelledTree;
 
@@ -40,6 +41,10 @@ public class DatabaseAccess {
         dbHelper.close();
     }
 
+    public void deleteDatabase(Context context){
+        dbHelper.deleteDatabase(context);
+    }
+
     public List<FelledTree> getAllFelledTrees(){
         List<FelledTree> TreeList = new ArrayList<FelledTree>();
 
@@ -65,7 +70,13 @@ public class DatabaseAccess {
     }
 
     public FelledTree createNewFelledTree(
-            String lumberjack, String team, String areaDescription, String latitude, String longitude, double height, double diameter, String date){
+            String lumberjack, String team, String areaDescription, String latitude, String longitude, double height, double diameter){
+
+        // get the actual date
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String date = sdf.format(new Date());
+
+
         ContentValues cv = new ContentValues();
 
         cv.put(COLUMNS[1], lumberjack);
