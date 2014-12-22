@@ -15,5 +15,6 @@
     <string name="latitude">Breitengrad</string>
     <string name="longitude">Längengrad</string>
     <string name="not_found">nicht gefunden</string>
+    <string name="history">Verlauf</string>
 
 </resources>

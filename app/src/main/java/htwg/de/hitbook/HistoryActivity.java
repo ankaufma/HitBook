@@ -37,8 +37,8 @@ public class HistoryActivity extends ActionBarActivity {
 
         dbAccess.open();
         dbAccess.createNewFelledTree("John","West","","123","345",8,80);
-        dbAccess.createNewFelledTree("Joe","West","","123","345",8,80);
-        dbAccess.createNewFelledTree("Jack","East","","123","345",8,80);
+//        dbAccess.createNewFelledTree("Joe","West","","123","345",8,80);
+//        dbAccess.createNewFelledTree("Jack","East","","123","345",8,80);
 
         dates = dbAccess.getAllDates();
 

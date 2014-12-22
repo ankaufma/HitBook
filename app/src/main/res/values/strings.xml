@@ -20,5 +20,6 @@
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
     <string name="not_found">not found</string>
+    <string name="history">History</string>
 
 </resources>
