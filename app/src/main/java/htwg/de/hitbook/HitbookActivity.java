@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import htwg.de.hitbook.database.DatabaseAccess;
 
@@ -27,9 +28,9 @@ public class HitbookActivity extends ActionBarActivity {
     EditText etDiameter,etLength;
     EditText etArea;
     TextView tvLongitude, tvLatitude;
+    Bitmap imageBitmap;
 
     ImageView imageView;
-    Bitmap imageBitmap;
     DatabaseAccess dbAccess;
     Context context;
 
@@ -67,7 +68,7 @@ public class HitbookActivity extends ActionBarActivity {
         tvLatitude = (TextView) findViewById(R.id.textViewLatitudeNumber);
 
         bCamera = (Button) findViewById(R.id.camera);
-        imageView = (ImageView) findViewById(R.id.imageView);
+        //imageView = (ImageView) findViewById(R.id.imageView);
 
         etLumberjack.addTextChangedListener(textWatcher);
         etTeam.addTextChangedListener(textWatcher);
@@ -76,12 +77,15 @@ public class HitbookActivity extends ActionBarActivity {
         bCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dispatchTakePictureIntent();
+                takeAPicture();
             }
         });
     }
 
-    private void dispatchTakePictureIntent() {
+    /**
+     * opens camera to take a picture
+     */
+    private void takeAPicture() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
@@ -93,7 +97,12 @@ public class HitbookActivity extends ActionBarActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             imageBitmap = (Bitmap) extras.get("data");
-            imageView.setImageBitmap(imageBitmap);
+            //imageView.setImageBitmap(imageBitmap);
+            createNewTree();
+
+//            dbAccess.open();
+//            etArea.setText(dbAccess.getAllDates().toString());
+//            dbAccess.close();
         }
     }
 
@@ -136,6 +145,7 @@ public class HitbookActivity extends ActionBarActivity {
      * user has written into the layout
      */
     public void createNewTree(){
+
         dbAccess.open();
         dbAccess.createNewFelledTree(
                 etLumberjack.getText().toString(),
@@ -144,7 +154,8 @@ public class HitbookActivity extends ActionBarActivity {
                 tvLatitude.getText().toString(),
                 tvLongitude.getText().toString(),
                 Double.parseDouble(etLength.getText().toString()) ,
-                Double.parseDouble(etDiameter.getText().toString())
+                Double.parseDouble(etDiameter.getText().toString()),
+                imageBitmap
         );
         dbAccess.close();
     }

@@ -24,6 +24,7 @@ public class HistoryActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
+        dbAccess = new DatabaseAccess(this.getBaseContext());
         fillList();
 
     }
@@ -31,12 +32,8 @@ public class HistoryActivity extends ActionBarActivity {
     public void fillList(){
 
 
-        dbAccess = new DatabaseAccess(this.getBaseContext());
-
-        dbAccess.deleteDatabase(this.getBaseContext());
-
         dbAccess.open();
-        dbAccess.createNewFelledTree("John","West","","123","345",8,80);
+//        dbAccess.createNewFelledTree("John","West","","123","345",8,80,null);
 //        dbAccess.createNewFelledTree("Joe","West","","123","345",8,80);
 //        dbAccess.createNewFelledTree("Jack","East","","123","345",8,80);
 

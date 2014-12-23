@@ -4,8 +4,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.util.Log;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,12 +21,15 @@ import htwg.de.hitbook.model.FelledTree;
  * Created by Ecki on 13.12.2014.
  */
 public class DatabaseAccess {
+    private Context context;
     private SQLiteDatabase db;
     private SQLiteHelper dbHelper;
     private static String[] COLUMNS;
     private static String TABLE_NAME;
+    private static final  String PICTURES_PATH = "/pictures/";
 
     public DatabaseAccess(Context context){
+        this.context = context;
         try{
             dbHelper = new SQLiteHelper(context);
             COLUMNS = dbHelper.getColumns();
@@ -70,7 +77,7 @@ public class DatabaseAccess {
     }
 
     public FelledTree createNewFelledTree(
-            String lumberjack, String team, String areaDescription, String latitude, String longitude, double height, double diameter){
+            String lumberjack, String team, String areaDescription, String latitude, String longitude, double height, double diameter, Bitmap picture){
 
         // get the actual date
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -92,6 +99,16 @@ public class DatabaseAccess {
 
         Cursor cursor = db.query(TABLE_NAME,COLUMNS,"ID ="+insertId,null,null,null,null);
         cursor.moveToFirst();
+
+        //Save picture of tree
+        try{
+            FileOutputStream fos;
+            fos = context.openFileOutput(PICTURES_PATH+insertId, Context.MODE_PRIVATE);
+            picture.compress(Bitmap.CompressFormat.PNG,100,fos);
+            fos.close();
+        }catch (Exception e){
+            Log.d("DatabaseAccess",e.toString());
+        }
 
         return CursorToFelledTree(cursor);
     }
