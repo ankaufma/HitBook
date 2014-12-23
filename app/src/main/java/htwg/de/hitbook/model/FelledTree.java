@@ -102,4 +102,9 @@ public class FelledTree {
     public double getVolume(){
         return (this.diameter*this.diameter)/40000*Math.PI*this.height;
     }
+
+    public String getVolumeAsString(){
+        return String.format("%.2f",getVolume());
+    }
+
 }

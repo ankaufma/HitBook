@@ -1,0 +1,248 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="htwg.de.hitbook.HistoryDetailActivity">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/scrollView2"
+        >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textViewTreeID"
+                android:text="@string/tree_id"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="8dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/textViewID"
+                android:text="@string/not_found"
+                android:textColor="@color/wallet_holo_blue_light"
+                android:layout_toRightOf="@id/textViewTreeID"
+                android:layout_toEndOf="@id/textViewTreeID"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_alignBottom="@id/textViewTreeID"
+                />
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="350dp"
+                android:id="@+id/imageViewTreePic"
+                android:layout_below="@id/textViewID"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textViewFelledText"
+                android:text="@string/felled_on"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/imageViewTreePic"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/textViewFelled"
+                android:text="@string/not_found"
+                android:textColor="@color/wallet_holo_blue_light"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_toRightOf="@id/textViewFelledText"
+                android:layout_toEndOf="@id/textViewFelledText"
+                android:layout_alignBottom="@id/textViewFelledText"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textViewLumberText"
+                android:text="@string/lumberjack"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="16dp"
+                android:layout_below="@id/textViewFelledText"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/textViewLumber"
+                android:text="@string/not_found"
+                android:textColor="@color/wallet_holo_blue_light"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_toRightOf="@id/textViewLumberText"
+                android:layout_toEndOf="@id/textViewLumberText"
+                android:layout_alignBottom="@id/textViewLumberText"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textViewTheTeamText"
+                android:text="@string/team"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/textViewLumberText"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/textViewTheTeam"
+                android:text="@string/not_found"
+                android:textColor="@color/wallet_holo_blue_light"
+                android:layout_alignLeft="@id/textViewLumber"
+                android:layout_alignStart="@id/textViewLumber"
+                android:layout_alignBottom="@id/textViewTheTeamText"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textViewTreeDiaText"
+                android:text="@string/diameter"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/textViewTheTeam"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/textViewTreeDia"
+                android:text="@string/not_found"
+                android:textColor="@color/wallet_holo_blue_light"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_toRightOf="@id/textViewTreeDiaText"
+                android:layout_toEndOf="@id/textViewTreeDiaText"
+                android:layout_alignBottom="@id/textViewTreeDiaText"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textViewTreeCMText"
+                android:text="@string/si_centimeters"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_toRightOf="@id/textViewTreeDia"
+                android:layout_toEndOf="@id/textViewTreeDia"
+                android:layout_alignBottom="@id/textViewTreeDia"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textViewTreeLenText"
+                android:text="@string/length"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/textViewTreeDiaText"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/textViewTreeLen"
+                android:text="@string/not_found"
+                android:textColor="@color/wallet_holo_blue_light"
+                android:layout_alignLeft="@id/textViewTreeDia"
+                android:layout_alignStart="@id/textViewTreeDia"
+                android:layout_alignBottom="@id/textViewTreeLenText"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textViewTreeMText"
+                android:text="@string/si_meters"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_toRightOf="@id/textViewTreeLen"
+                android:layout_toEndOf="@id/textViewTreeLen"
+                android:layout_alignBottom="@id/textViewTreeLen"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textViewVolumeText"
+                android:text="@string/volume"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/textViewTreeLenText"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/textViewVolume"
+                android:text="@string/not_found"
+                android:textColor="@color/wallet_holo_blue_light"
+                android:layout_alignLeft="@id/textViewTreeDia"
+                android:layout_alignStart="@id/textViewTreeDia"
+                android:layout_alignBottom="@id/textViewVolumeText"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textViewTreeMH3Text"
+                android:text="@string/si_volume"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_toRightOf="@id/textViewVolume"
+                android:layout_toEndOf="@id/textViewVolume"
+                android:layout_alignBottom="@id/textViewVolumeText"
+                />
+
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

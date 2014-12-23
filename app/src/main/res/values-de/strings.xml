@@ -16,5 +16,8 @@
     <string name="longitude">Längengrad</string>
     <string name="not_found">nicht gefunden</string>
     <string name="history">Verlauf</string>
+    <string name="tree_id">Baum-Id</string>
+    <string name="felled_on">Gefällt am</string>
+    <string name="volume">Volumen</string>
 
 </resources>

@@ -21,5 +21,10 @@
     <string name="longitude">Longitude</string>
     <string name="not_found">not found</string>
     <string name="history">History</string>
+    <string name="title_activity_history_detail">HistoryDetailActivity</string>
+    <string name="tree_id">Tree Id</string>
+    <string name="felled_on">Felled on</string>
+    <string name="volume">Volume</string>
+    <string name="si_volume">m^3</string>
 
 </resources>

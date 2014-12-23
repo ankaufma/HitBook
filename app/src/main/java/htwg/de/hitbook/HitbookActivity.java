@@ -30,7 +30,7 @@ public class HitbookActivity extends ActionBarActivity {
     TextView tvLongitude, tvLatitude;
     Bitmap imageBitmap;
 
-    ImageView imageView;
+    //ImageView imageView;
     DatabaseAccess dbAccess;
     Context context;
 
@@ -59,6 +59,7 @@ public class HitbookActivity extends ActionBarActivity {
 
         context = this.getBaseContext();
         dbAccess = new DatabaseAccess(context);
+        //dbAccess.deleteDatabase(context);
         etLumberjack = (EditText) findViewById(R.id.editText);
         etTeam = (EditText) findViewById(R.id.editText2);
         etDiameter = (EditText) findViewById(R.id.editTextDiameter);
