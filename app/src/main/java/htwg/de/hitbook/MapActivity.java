@@ -30,7 +30,7 @@ public class MapActivity extends ActionBarActivity {
         setContentView(R.layout.activity_map);
         bmp = getIntent().getExtras().getParcelable("Picture");
      //   gps = new GPSTracker(this);
-        gps = new GPSTracker();
+        gps = new GPSTracker(this);
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         map = mapFragment.getMap();
