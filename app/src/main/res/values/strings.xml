@@ -26,5 +26,7 @@
     <string name="felled_on">Felled on</string>
     <string name="volume">Volume</string>
     <string name="si_volume">m^3</string>
+    <string name="preferences_file_key">preferences</string>
+    <string name="toast_gps_not_activated">GPS is not activated!</string>
 
 </resources>

@@ -19,6 +19,7 @@ public class HistoryDetailActivity extends ActionBarActivity {
     TextView tvFelled;
     TextView tvLumber, tvTheTeam;
     TextView tvTreeDia, tvTreLen, tvVolume;
+    TextView tvArea;
     ImageView ivTreePic;
     Integer id;
     FelledTree felledTree;
@@ -38,12 +39,13 @@ public class HistoryDetailActivity extends ActionBarActivity {
         id = Integer.parseInt(intent.getStringExtra("id"));
 
         tvId = (TextView) findViewById(R.id.textViewID);
-        tvFelled=(TextView) findViewById(R.id.textViewFelled);
+        tvFelled = (TextView) findViewById(R.id.textViewFelled);
         tvLumber = (TextView) findViewById(R.id.textViewLumber);
         tvTheTeam = (TextView) findViewById(R.id.textViewTheTeam);
         tvTreeDia = (TextView) findViewById(R.id.textViewTreeDia);
         tvTreLen = (TextView) findViewById(R.id.textViewTreeLen);
         tvVolume = (TextView) findViewById(R.id.textViewVolume);
+        tvArea = (TextView) findViewById(R.id.textViewTreeArea);
         dbAccess.open();
         this.felledTree = dbAccess.getFelledTreeById(id);
         dbAccess.close();
@@ -56,6 +58,7 @@ public class HistoryDetailActivity extends ActionBarActivity {
         tvTreeDia.setText(((Double)felledTree.getDiameter()).toString());
         tvTreLen.setText(((Double)felledTree.getHeight()).toString());
         tvVolume.setText(felledTree.getVolumeAsString());
+        tvArea.setText(felledTree.getAreaDescription());
 
         //Load image
         ivTreePic = (ImageView)findViewById(R.id.imageViewTreePic);

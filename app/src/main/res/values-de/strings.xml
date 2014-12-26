@@ -19,5 +19,6 @@
     <string name="tree_id">Baum-Id</string>
     <string name="felled_on">Gefällt am</string>
     <string name="volume">Volumen</string>
+    <string name="toast_gps_not_activated">GPS ist nicht eingeschaltet!</string>
 
 </resources>

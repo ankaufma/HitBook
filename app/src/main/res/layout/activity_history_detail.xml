@@ -243,6 +243,31 @@
                 android:layout_alignBottom="@id/textViewVolumeText"
                 />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textViewTreeAreaText"
+                android:text="@string/area_description"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/textViewVolumeText"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/textViewTreeArea"
+                android:text="@string/not_found"
+                android:textColor="@color/wallet_holo_blue_light"
+                android:layout_below="@id/textViewTreeAreaText"
+                android:layout_marginTop="5dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                />
+
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

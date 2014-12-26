@@ -264,6 +264,18 @@
                 android:layout_alignLeft="@id/textViewLongitudeNumber"
                 android:layout_alignStart="@id/textViewLongitudeNumber"/>
 
+            <!--<ImageButton-->
+                <!--android:layout_width="60dp"-->
+                <!--android:layout_height="60dp"-->
+                <!--android:id="@+id/imageButtonRefresh"-->
+                <!--android:src="@drawable/refresh_icon"-->
+                <!--android:layout_alignTop="@id/textViewLongitudeNumber"-->
+                <!--android:layout_alignBottom="@id/textViewLatitudeNumber"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:scaleType="fitCenter"-->
+                <!--android:adjustViewBounds="true"/>-->
+
         </RelativeLayout>
     </ScrollView>
 

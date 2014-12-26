@@ -47,7 +47,6 @@ public class HistoryActivity extends ActionBarActivity {
                 intent.setClass(context, HistoryDetailActivity.class);
                 intent.putExtra("id",((TextView)view).getText());
                 startActivity(intent);
-
             }
         });
 
