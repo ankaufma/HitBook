@@ -71,6 +71,13 @@ public class DatabaseAccess {
         }
     }
 
+    public void deleteTreeById(int id){
+        // delete from database
+        db.delete(TABLE_NAME,COLUMNS[0]+"="+id,null);
+        // delete image of tree
+        new File(imgDirectory,id+".png").delete();
+    }
+
     public List<FelledTree> getAllFelledTrees(){
         List<FelledTree> TreeList = new ArrayList<FelledTree>();
 

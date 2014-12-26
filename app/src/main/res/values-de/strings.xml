@@ -20,5 +20,9 @@
     <string name="felled_on">Gefällt am</string>
     <string name="volume">Volumen</string>
     <string name="toast_gps_not_activated">GPS ist nicht eingeschaltet!</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="delete_alert_title">Baum löschen?</string>
+    <string name="delete_alert_message">Dieser Baum wird aus der Datenbank gelöscht!</string>
 
 </resources>

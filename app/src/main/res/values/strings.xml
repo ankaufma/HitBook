@@ -28,5 +28,9 @@
     <string name="si_volume">m^3</string>
     <string name="preferences_file_key">preferences</string>
     <string name="toast_gps_not_activated">GPS is not activated!</string>
+    <string name="Yes">yes</string>
+    <string name="No">no</string>
+    <string name="delete_alert_title">Delete Tree?</string>
+    <string name="delete_alert_message">The current tree will be deleted from database!</string>
 
 </resources>

@@ -50,8 +50,14 @@ public class HistoryActivity extends ActionBarActivity {
             }
         });
 
-        fillList();
 
+
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        fillList();
     }
 
     public void fillList(){
@@ -68,7 +74,7 @@ public class HistoryActivity extends ActionBarActivity {
         dbAccess.close();
 
         ArrayAdapter<String> aa = new ArrayAdapter<String>(HistoryActivity.this,android.R.layout.simple_list_item_1,ids);
-        ListView lv = (ListView) findViewById(R.id.listView);
-        lv.setAdapter(aa);
+
+        listView.setAdapter(aa);
     }
 }

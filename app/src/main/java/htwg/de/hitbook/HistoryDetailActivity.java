@@ -1,11 +1,16 @@
 package htwg.de.hitbook;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +26,7 @@ public class HistoryDetailActivity extends ActionBarActivity {
     TextView tvTreeDia, tvTreLen, tvVolume;
     TextView tvArea;
     ImageView ivTreePic;
+    ImageButton ibDelete;
     Integer id;
     FelledTree felledTree;
     DatabaseAccess dbAccess;
@@ -46,6 +52,7 @@ public class HistoryDetailActivity extends ActionBarActivity {
         tvTreLen = (TextView) findViewById(R.id.textViewTreeLen);
         tvVolume = (TextView) findViewById(R.id.textViewVolume);
         tvArea = (TextView) findViewById(R.id.textViewTreeArea);
+        ibDelete = (ImageButton) findViewById(R.id.imageButtonDelete);
         dbAccess.open();
         this.felledTree = dbAccess.getFelledTreeById(id);
         dbAccess.close();
@@ -66,6 +73,48 @@ public class HistoryDetailActivity extends ActionBarActivity {
         ivTreePic.setImageBitmap(dbAccess.getPictureById(id));
         dbAccess.close();
 
+        // Add delete Button Listener
+        ibDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                try {
+
+
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(HistoryDetailActivity.this);
+
+                    // Setting Dialog Title
+                    alertDialog.setTitle(getString(R.string.delete_alert_title));
+
+                    // Setting Dialog Message
+                    alertDialog.setMessage(getString(R.string.delete_alert_message));
+
+                    // On pressing Settings button
+                    alertDialog.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,int which) {
+                            // continue with delete
+                            dbAccess.open();
+                            dbAccess.deleteTreeById(id);
+                            dbAccess.close();
+                            // Kill Activity
+                            finish();
+                        }
+                    });
+                    // on pressing cancel button
+                    alertDialog.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
+                    // Showing Alert Message
+                    alertDialog.show();
+
+                }catch (Exception e){
+                    Log.d("HistoryDetailActivity","Delete Error");
+                }
+            }
+        });
     }
 
 
