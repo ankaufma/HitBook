@@ -126,6 +126,33 @@ public class DatabaseAccess {
         return dates;
     }
 
+    public List<Bitmap> getAllPictures(){
+        List<Bitmap> pictures = new ArrayList<Bitmap>();
+        for (int i = 0; i<getAllFelledTrees().size(); i++){
+            pictures.add(getPictureById(getAllFelledTrees().get(i).getId()));
+        }
+
+        return pictures;
+    }
+
+    public List<String> getAllTeams(){
+        List<String> teams = new ArrayList<String>();
+        for (int i = 0; i<getAllFelledTrees().size(); i++){
+            teams.add(getAllFelledTrees().get(i).getTeam());
+        }
+
+        return teams;
+    }
+
+    public List<String> getAllLumberjacks(){
+        List<String> lumberjacks = new ArrayList<String>();
+        for (int i = 0; i<getAllFelledTrees().size(); i++){
+            lumberjacks.add(getAllFelledTrees().get(i).getLumberjack());
+        }
+
+        return lumberjacks;
+    }
+
     /**
      * Puts the Ids of all entries in a List
      * @return Ids as String List
