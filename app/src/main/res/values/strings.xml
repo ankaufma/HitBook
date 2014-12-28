@@ -34,5 +34,13 @@
     <string name="delete_alert_message">The current tree will be deleted from database!</string>
     <string name="id">ID:</string>
     <string name="toast_error_creating_tree">Error on creating Tree, please try again.</string>
+    <string name="sort_by">Sort by</string>
+    <string name="s_optn_date">Date (ascending)</string>
+    <string name="s_optn_lumberjack">Lumberjack (ascending)</string>
+    <string name="s_optn_team">Team (ascending)</string>
+    <string name="s_optn_date_inv">Date (falling)</string>
+    <string name="s_optn_lumberjack_inv">Lumberjack (falling)</string>
+    <string name="s_optn_team_inv">Team (falling)</string>
+    <string name="toast_tree_successful">New tree successfully created</string>
 
 </resources>

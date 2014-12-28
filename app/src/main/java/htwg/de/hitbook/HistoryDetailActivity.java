@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +15,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.File;
 
 import htwg.de.hitbook.database.DatabaseAccess;
 import htwg.de.hitbook.model.FelledTree;
@@ -69,7 +73,16 @@ public class HistoryDetailActivity extends ActionBarActivity {
 
         //Load image
         ivTreePic = (ImageView)findViewById(R.id.imageViewTreePic);
-        ivTreePic.setImageBitmap(felledTree.getThumbnail());
+
+        // Check for Full-Sized Image
+        File imgFile = new  File(HitbookActivity.EXTERNAL_STORAGE_FOLDER_PATH+felledTree.getIdAsString()+".jpg");
+        if(imgFile.exists()) {
+            // Add Image to View
+            ivTreePic.setImageBitmap(BitmapFactory.decodeFile(imgFile.getAbsolutePath()));
+        } else {
+            // Else use thumbnail
+            ivTreePic.setImageBitmap(felledTree.getThumbnail());
+        }
         //dbAccess.open();
         //ivTreePic.setImageBitmap(dbAccess.getThumbnailById(id));
         //dbAccess.close();

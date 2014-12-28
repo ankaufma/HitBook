@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import htwg.de.hitbook.database.DatabaseAccess;
+import htwg.de.hitbook.model.FelledTree;
 import htwg.de.hitbook.service.GPSManager;
 
 
@@ -39,6 +40,8 @@ public class HitbookActivity extends ActionBarActivity {
     private final static int REQUEST_IMAGE_CAPTURE = 1;
     private final static int THUMBSIZE = 64*2;
     private final static String EXTERNAL_STORAGE_FOLDER_NAME = "/Hitbook/";
+    public final static String EXTERNAL_STORAGE_FOLDER_PATH =
+            Environment.getExternalStorageDirectory().getAbsolutePath()+EXTERNAL_STORAGE_FOLDER_NAME;
     private final static String PICTURE_PATH_NAME = "picPath";
 
     Button bCamera;
@@ -186,20 +189,24 @@ public class HitbookActivity extends ActionBarActivity {
      * This function creates a new tree in the database by using the information the
      * user has written into the layout
      */
-    public void createNewTree(){
+    public FelledTree createNewTree(){
+
+        FelledTree felledTree;
 
         dbAccess.open();
-        dbAccess.createNewFelledTree(
-                etLumberjack.getText().toString(),
-                etTeam.getText().toString(),
-                etArea.getText().toString(),
-                tvLatitude.getText().toString(),
-                tvLongitude.getText().toString(),
-                Double.parseDouble(etLength.getText().toString()) ,
-                Double.parseDouble(etDiameter.getText().toString()),
-                thumbnail
+        felledTree = dbAccess.createNewFelledTree(
+                        etLumberjack.getText().toString(),
+                        etTeam.getText().toString(),
+                        etArea.getText().toString(),
+                        tvLatitude.getText().toString(),
+                        tvLongitude.getText().toString(),
+                        Double.parseDouble(etLength.getText().toString()) ,
+                        Double.parseDouble(etDiameter.getText().toString()),
+                        thumbnail
         );
         dbAccess.close();
+
+        return felledTree;
     }
 
     /**
@@ -292,11 +299,17 @@ public class HitbookActivity extends ActionBarActivity {
             // get Thumbnail of the image
             thumbnail = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(mCurrentPhotoPath),
                     THUMBSIZE, THUMBSIZE);
-//            Bundle extras = data.getExtras();
-//            thumbnail = (Bitmap) extras.get("data");
-            //imageView.setImageBitmap(thumbnail);
+
+            FelledTree felledTree;
+
             if (thumbnail != null) {
-                createNewTree();
+                felledTree = createNewTree();
+
+                //Rename Full-Sized Picture to ID.jpg
+                File to = new File(EXTERNAL_STORAGE_FOLDER_PATH,felledTree.getIdAsString()+".jpg");
+                File from = new File(mCurrentPhotoPath);
+                from.renameTo(to);
+                Toast.makeText(context,getString(R.string.toast_tree_successful),Toast.LENGTH_LONG).show();
             }
             else {
                 Toast.makeText(context,getString(R.string.toast_error_creating_tree),Toast.LENGTH_LONG).show();
@@ -311,7 +324,7 @@ public class HitbookActivity extends ActionBarActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ EXTERNAL_STORAGE_FOLDER_NAME);
+        File storageDir = new File(EXTERNAL_STORAGE_FOLDER_PATH);
         if(!storageDir.exists()) {
             storageDir.mkdir(); // Create Directory if it doesn't exist
         }

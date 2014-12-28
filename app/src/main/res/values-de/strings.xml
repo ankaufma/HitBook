@@ -25,5 +25,13 @@
     <string name="delete_alert_title">Baum löschen?</string>
     <string name="delete_alert_message">Dieser Baum wird aus der Datenbank gelöscht!</string>
     <string name="toast_error_creating_tree">Fehler beim Anlegen des Baums, bitte versuchen Sie es nochmal.</string>
+    <string name="sort_by">Sortieren:</string>
+    <string name="s_optn_date">Datum (aufsteigend)</string>
+    <string name="s_optn_lumberjack">Holzfäller (aufsteigend)</string>
+    <string name="s_optn_team">Team (aufsteigend)</string>
+    <string name="s_optn_date_inv">Datum (fallend)</string>
+    <string name="s_optn_lumberjack_inv">Holzfäller (fallend)</string>
+    <string name="s_optn_team_inv">Team (fallend)</string>
+    <string name="toast_tree_successful">Baum wurde erfolgreich angelegt</string>
 
 </resources>

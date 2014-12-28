@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import htwg.de.hitbook.HistoryActivity;
+import htwg.de.hitbook.HitbookActivity;
 import htwg.de.hitbook.model.FelledTree;
 
 /**
@@ -32,7 +34,7 @@ public class DatabaseAccess {
     private static String TABLE_NAME;
     private static int ZERO_OFFSET = 0;
     private static final String PICTURES_FOLDER = "pictures";
-    private  File imgDirectory;
+//    private  File imgDirectory;
 
     public DatabaseAccess(Context context){
         this.context = context;
@@ -44,9 +46,9 @@ public class DatabaseAccess {
             Toast.makeText(context,"Datenbank Fehler", Toast.LENGTH_LONG).show();
         }
 
-        // get path to image directory
-        ContextWrapper contextWrapper = new ContextWrapper(context);
-        imgDirectory = contextWrapper.getDir(PICTURES_FOLDER, Context.MODE_PRIVATE);
+//        // get path to image directory
+//        ContextWrapper contextWrapper = new ContextWrapper(context);
+//        imgDirectory = contextWrapper.getDir(PICTURES_FOLDER, Context.MODE_PRIVATE);
 
     }
 
@@ -63,19 +65,20 @@ public class DatabaseAccess {
         dbHelper.deleteDatabase(context);
 
         // delete pictures from storage
-//        if (imgDirectory.isDirectory()) {
-//            String[] children = imgDirectory.list();
-//            for (int i = 0; i < children.length; i++) {
-//                new File(imgDirectory, children[i]).delete();
-//            }
-//        }
+        File imgDirectory = new File(HitbookActivity.EXTERNAL_STORAGE_FOLDER_PATH);
+        if (imgDirectory.isDirectory()) {
+            String[] children = imgDirectory.list();
+            for (int i = 0; i < children.length; i++) {
+                new File(imgDirectory, children[i]).delete();
+            }
+        }
     }
 
     public void deleteTreeById(int id){
         // delete from database
         db.delete(TABLE_NAME,COLUMNS[0]+"="+id,null);
         // delete image of tree
-       // new File(imgDirectory,id+".png").delete();
+        new File(HitbookActivity.EXTERNAL_STORAGE_FOLDER_PATH,id+".jpg").delete();
     }
 
     public List<FelledTree> getAllFelledTrees(){
