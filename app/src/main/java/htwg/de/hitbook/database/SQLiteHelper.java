@@ -26,7 +26,8 @@ public class SQLiteHelper extends SQLiteOpenHelper{
             "Longitude",
             "Height",
             "Diameter",
-            "Date"
+            "Date",
+            "Thumbnail"
     };
     // SQLite commands to create new table
     private static final String CREATE_TABLE_FELLED_TREES=""
@@ -39,7 +40,8 @@ public class SQLiteHelper extends SQLiteOpenHelper{
             +COLUMNS[5]+" text,"
             +COLUMNS[6]+" real,"
             +COLUMNS[7]+" real,"
-            +COLUMNS[8]+" text"
+            +COLUMNS[8]+" text,"
+            +COLUMNS[9]+" blob"
             +")";
 
     public SQLiteHelper(Context context){

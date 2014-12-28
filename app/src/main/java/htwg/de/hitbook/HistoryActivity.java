@@ -45,10 +45,15 @@ public class HistoryActivity extends ActionBarActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                //Started Detail View Activtiy via Intent
+                // Get Actual FelledTree
+                FelledTree felledTree = (FelledTree)listView.getAdapter().getItem(position);
+
+
+                //Start Detail View Activtiy via Intent
                 Intent intent = new Intent();
                 intent.setClass(context, HistoryDetailActivity.class);
-                intent.putExtra("id",((TextView)view.findViewById(R.id.textViewItemID)).getText());
+                intent.putExtra("id",felledTree.getIdAsString());
+                //intent.putExtra("id",((TextView)view.findViewById(R.id.textViewItemID)).getText());
                 startActivity(intent);
             }
         });

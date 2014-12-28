@@ -6,38 +6,51 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.media.ThumbnailUtils;
+import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import htwg.de.hitbook.database.DatabaseAccess;
 import htwg.de.hitbook.service.GPSManager;
-import htwg.de.hitbook.service.GPSTracker;
 
 
 public class HitbookActivity extends ActionBarActivity {
 
-    private final int REQUEST_IMAGE_CAPTURE = 1;
+    private final static int REQUEST_IMAGE_CAPTURE = 1;
+    private final static int THUMBSIZE = 64*2;
+    private final static String EXTERNAL_STORAGE_FOLDER_NAME = "/Hitbook/";
+    private final static String PICTURE_PATH_NAME = "picPath";
+
     Button bCamera;
  //   ImageButton ibRefresh;
     EditText etLumberjack, etTeam;
     EditText etDiameter,etLength;
     EditText etArea;
     TextView tvLongitude, tvLatitude;
-    Bitmap imageBitmap;
+    Bitmap thumbnail;
     BroadcastReceiver broadcastReceiver;
+    String mCurrentPhotoPath;
+
 
 
     //ImageView imageView;
@@ -67,6 +80,8 @@ public class HitbookActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_hitbook);
 
         context = this.getBaseContext();
@@ -131,29 +146,7 @@ public class HitbookActivity extends ActionBarActivity {
         stopService(intent);
     }
 
-    /**
-     * opens camera to take a picture
-     */
-    private void takeAPicture() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            imageBitmap = (Bitmap) extras.get("data");
-            //imageView.setImageBitmap(imageBitmap);
-            createNewTree();
-
-            // Save last team and lumberjack
-            saveContentToPref(etLumberjack,"lumberjack");
-            saveContentToPref(etTeam,"team");
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -185,7 +178,7 @@ public class HitbookActivity extends ActionBarActivity {
 
     public void showMap() {
         Intent intent = new Intent(this, MapActivity.class);
-        intent.putExtra("Picture", imageBitmap);
+        intent.putExtra("Picture", thumbnail);
         startActivity(intent);
     }
 
@@ -204,7 +197,7 @@ public class HitbookActivity extends ActionBarActivity {
                 tvLongitude.getText().toString(),
                 Double.parseDouble(etLength.getText().toString()) ,
                 Double.parseDouble(etDiameter.getText().toString()),
-                imageBitmap
+                thumbnail
         );
         dbAccess.close();
     }
@@ -269,4 +262,89 @@ public class HitbookActivity extends ActionBarActivity {
         // Start GPS Service
         stopGPSService();
     }
+
+    /**
+     * opens camera to take a picture
+     */
+    private void takeAPicture() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            }catch (IOException e){
+                Log.d("HitbookActivity","Error saving picture");
+            }
+            // save Full-Sized picture only, if the File was successfully created, else just thumbnail
+            if(photoFile !=null){
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+            }
+
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            // get Thumbnail of the image
+            thumbnail = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(mCurrentPhotoPath),
+                    THUMBSIZE, THUMBSIZE);
+//            Bundle extras = data.getExtras();
+//            thumbnail = (Bitmap) extras.get("data");
+            //imageView.setImageBitmap(thumbnail);
+            if (thumbnail != null) {
+                createNewTree();
+            }
+            else {
+                Toast.makeText(context,getString(R.string.toast_error_creating_tree),Toast.LENGTH_LONG).show();
+            }
+            // Save last team and lumberjack
+            saveContentToPref(etLumberjack,"lumberjack");
+            saveContentToPref(etTeam,"team");
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ EXTERNAL_STORAGE_FOLDER_NAME);
+        if(!storageDir.exists()) {
+            storageDir.mkdir(); // Create Directory if it doesn't exist
+        }
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        //mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        mCurrentPhotoPath = image.getAbsolutePath();
+
+        return image;
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save Picture path
+        savedInstanceState.putString(PICTURE_PATH_NAME, mCurrentPhotoPath);
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can restore the view hierarchy
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // Restore state members from saved instance
+        mCurrentPhotoPath = savedInstanceState.getString(PICTURE_PATH_NAME);
+    }
+
 }

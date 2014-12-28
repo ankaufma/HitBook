@@ -33,5 +33,6 @@
     <string name="delete_alert_title">Delete Tree?</string>
     <string name="delete_alert_message">The current tree will be deleted from database!</string>
     <string name="id">ID:</string>
+    <string name="toast_error_creating_tree">Error on creating Tree, please try again.</string>
 
 </resources>

@@ -1,5 +1,7 @@
 package htwg.de.hitbook.model;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by ankaufma on 27.11.2014.
  */
@@ -13,8 +15,9 @@ public class FelledTree {
     private double height; //in meters
     private double diameter; //in centimeters
     private String date; // yyyy.mm.dd
+    private Bitmap thumbnail;
 
-    public FelledTree(int id, String lumberjack, String team, String areaDescription, String latitude, String longitude, double height, double diameter, String date) {
+    public FelledTree(int id, String lumberjack, String team, String areaDescription, String latitude, String longitude, double height, double diameter, String date, Bitmap thumbnail) {
         this.id = id;
         this.lumberjack = lumberjack;
         this.team = team;
@@ -24,11 +27,15 @@ public class FelledTree {
         this.height = height;
         this.diameter = diameter;
         this.date = date;
-
+        this.thumbnail =thumbnail;
     }
 
     public int getId() {
         return id;
+    }
+
+    public String getIdAsString(){
+        return ((Integer)getId()).toString();
     }
 
     public void setId(int id) {
@@ -107,4 +114,11 @@ public class FelledTree {
         return String.format("%.2f",getVolume());
     }
 
+    public Bitmap getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(Bitmap thumbnail) {
+        this.thumbnail = thumbnail;
+    }
 }

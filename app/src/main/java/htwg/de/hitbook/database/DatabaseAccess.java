@@ -7,11 +7,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
-import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -31,6 +30,7 @@ public class DatabaseAccess {
     private SQLiteHelper dbHelper;
     private static String[] COLUMNS;
     private static String TABLE_NAME;
+    private static int ZERO_OFFSET = 0;
     private static final String PICTURES_FOLDER = "pictures";
     private  File imgDirectory;
 
@@ -63,19 +63,19 @@ public class DatabaseAccess {
         dbHelper.deleteDatabase(context);
 
         // delete pictures from storage
-        if (imgDirectory.isDirectory()) {
-            String[] children = imgDirectory.list();
-            for (int i = 0; i < children.length; i++) {
-                new File(imgDirectory, children[i]).delete();
-            }
-        }
+//        if (imgDirectory.isDirectory()) {
+//            String[] children = imgDirectory.list();
+//            for (int i = 0; i < children.length; i++) {
+//                new File(imgDirectory, children[i]).delete();
+//            }
+//        }
     }
 
     public void deleteTreeById(int id){
         // delete from database
         db.delete(TABLE_NAME,COLUMNS[0]+"="+id,null);
         // delete image of tree
-        new File(imgDirectory,id+".png").delete();
+       // new File(imgDirectory,id+".png").delete();
     }
 
     public List<FelledTree> getAllFelledTrees(){
@@ -113,45 +113,6 @@ public class DatabaseAccess {
         return felledTree;
     }
 
-    /**
-     * Puts the dates of all entries in a List
-     * @return
-     */
-    public List<String> getAllDates(){
-        List<String> dates = new ArrayList<String>();
-        for (int i = 0; i<getAllFelledTrees().size(); i++){
-            dates.add(getAllFelledTrees().get(i).getDate());
-        }
-
-        return dates;
-    }
-
-    public List<Bitmap> getAllPictures(){
-        List<Bitmap> pictures = new ArrayList<Bitmap>();
-        for (int i = 0; i<getAllFelledTrees().size(); i++){
-            pictures.add(getPictureById(getAllFelledTrees().get(i).getId()));
-        }
-
-        return pictures;
-    }
-
-    public List<String> getAllTeams(){
-        List<String> teams = new ArrayList<String>();
-        for (int i = 0; i<getAllFelledTrees().size(); i++){
-            teams.add(getAllFelledTrees().get(i).getTeam());
-        }
-
-        return teams;
-    }
-
-    public List<String> getAllLumberjacks(){
-        List<String> lumberjacks = new ArrayList<String>();
-        for (int i = 0; i<getAllFelledTrees().size(); i++){
-            lumberjacks.add(getAllFelledTrees().get(i).getLumberjack());
-        }
-
-        return lumberjacks;
-    }
 
     /**
      * Puts the Ids of all entries in a List
@@ -187,6 +148,10 @@ public class DatabaseAccess {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date = sdf.format(new Date());
 
+        // Prepare thumbnail for database
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        picture.compress(Bitmap.CompressFormat.PNG, 100, bos);
+        byte[] byteArray = bos.toByteArray();
 
         ContentValues cv = new ContentValues();
 
@@ -198,6 +163,7 @@ public class DatabaseAccess {
         cv.put(COLUMNS[6], height);
         cv.put(COLUMNS[7], diameter);
         cv.put(COLUMNS[8], date);
+        cv.put(COLUMNS[9], byteArray);
 
         long insertId = db.insert("Felled_Trees",null,cv);
 
@@ -205,49 +171,55 @@ public class DatabaseAccess {
         cursor.moveToFirst();
 
         //Save picture of tree
-        savePictureById(picture, (int) insertId);
+        //savePictureById(picture, (int) insertId);
 
         return CursorToFelledTree(cursor);
     }
 
-    private boolean savePictureById(Bitmap picture, int TreeId){
-        try{
-            ContextWrapper contextWrapper = new ContextWrapper(context);
-            // create directory
-            File picPath = new File(imgDirectory,TreeId+".png");
-            FileOutputStream fos = new FileOutputStream(picPath);
-            picture.compress(Bitmap.CompressFormat.PNG,100,fos);
-            fos.flush();
-            fos.close();
-            return true;
-        }catch (Exception e){
-            Log.d("DatabaseAccess","Failed to save picture.");
-            return false;
-        }
-    }
+//    private boolean savePictureById(Bitmap picture, int TreeId){
+//        try{
+//            ContextWrapper contextWrapper = new ContextWrapper(context);
+//            // create directory
+//            File picPath = new File(imgDirectory,TreeId+".png");
+//            FileOutputStream fos = new FileOutputStream(picPath);
+//            picture.compress(Bitmap.CompressFormat.PNG,100,fos);
+//            fos.flush();
+//            fos.close();
+//            return true;
+//        }catch (Exception e){
+//            Log.d("DatabaseAccess","Failed to save picture.");
+//            return false;
+//        }
+//    }
 
     /**
      * Returns the picture of the trees id
      * @param id
      * @return
      */
-    public Bitmap getPictureById(int id){
-        Bitmap picture;
-
-        try{
-            File picPath = new File(imgDirectory,id+".png");
-            FileInputStream fis = new FileInputStream(picPath);
-            picture = BitmapFactory.decodeStream(fis);
-            fis.close();
-            return picture;
-        }catch (Exception e){
-            Log.d("DatabaseAccess",e.toString());
-            return null;
-        }
-
-    }
+//    public Bitmap getThumbnailById(int id){
+//        Bitmap thumbnail;
+//
+//        try{
+//            File picPath = new File(imgDirectory,id+".png");
+//            FileInputStream fis = new FileInputStream(picPath);
+//            thumbnail = BitmapFactory.decodeStream(fis);
+//            fis.close();
+//            return thumbnail;
+//        }catch (Exception e){
+//            Log.d("DatabaseAccess",e.toString());
+//            return null;
+//        }
+//
+//    }
 
     private FelledTree CursorToFelledTree(Cursor cursor){
+
+        // Get Thumbnail
+        byte[] byteArray = cursor.getBlob(9);
+        Bitmap thumbnail = BitmapFactory.decodeByteArray(byteArray, ZERO_OFFSET, byteArray.length);
+
+        // Get Three
         FelledTree ft = new FelledTree(
                 cursor.getInt(0),
                 cursor.getString(1),
@@ -257,7 +229,8 @@ public class DatabaseAccess {
                 cursor.getString(5),
                 cursor.getDouble(6),
                 cursor.getDouble(7),
-                cursor.getString(8)
+                cursor.getString(8),
+                thumbnail
         );
 
         return ft;

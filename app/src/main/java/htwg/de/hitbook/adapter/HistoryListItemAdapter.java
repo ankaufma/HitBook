@@ -54,6 +54,7 @@ public class HistoryListItemAdapter extends ArrayAdapter<FelledTree> {
             TextView tvTeam = (TextView) view.findViewById(R.id.textViewItemTeam);
             TextView tvDate = (TextView) view.findViewById(R.id.textViewItemDate);
             TextView tvId = (TextView) view.findViewById(R.id.textViewItemID);
+            ImageView ivThumbnail = (ImageView) view.findViewById(R.id.imageViewItem);
 
             if(tvDate != null) {
                 tvDate.setText(felledTree.getDate());
@@ -66,6 +67,9 @@ public class HistoryListItemAdapter extends ArrayAdapter<FelledTree> {
             }
             if(tvId != null) {
                 tvId.setText(((Integer)felledTree.getId()).toString());
+            }
+            if(ivThumbnail != null){
+                ivThumbnail.setImageBitmap(felledTree.getThumbnail());
             }
         }
 

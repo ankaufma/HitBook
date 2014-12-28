@@ -69,9 +69,10 @@ public class HistoryDetailActivity extends ActionBarActivity {
 
         //Load image
         ivTreePic = (ImageView)findViewById(R.id.imageViewTreePic);
-        dbAccess.open();
-        ivTreePic.setImageBitmap(dbAccess.getPictureById(id));
-        dbAccess.close();
+        ivTreePic.setImageBitmap(felledTree.getThumbnail());
+        //dbAccess.open();
+        //ivTreePic.setImageBitmap(dbAccess.getThumbnailById(id));
+        //dbAccess.close();
 
         // Add delete Button Listener
         ibDelete.setOnClickListener(new View.OnClickListener() {

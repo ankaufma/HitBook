@@ -24,5 +24,6 @@
     <string name="no">Nein</string>
     <string name="delete_alert_title">Baum löschen?</string>
     <string name="delete_alert_message">Dieser Baum wird aus der Datenbank gelöscht!</string>
+    <string name="toast_error_creating_tree">Fehler beim Anlegen des Baums, bitte versuchen Sie es nochmal.</string>
 
 </resources>
