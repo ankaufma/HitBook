@@ -2,39 +2,35 @@ package htwg.de.hitbook.database;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import htwg.de.hitbook.HistoryActivity;
 import htwg.de.hitbook.HitbookActivity;
 import htwg.de.hitbook.model.FelledTree;
 
+import static android.widget.Toast.LENGTH_LONG;
+
 /**
- * Created by Ecki on 13.12.2014.
+ * Created by Daniel Eckstein on 13.12.2014.
+ * Class for getting Access to the Database, use this instead of Helper Class
  */
 public class DatabaseAccess {
-    private Context context;
+    Context context;
     private SQLiteDatabase db;
     private SQLiteHelper dbHelper;
     private static String[] COLUMNS;
     private static String TABLE_NAME;
-    private static int ZERO_OFFSET = 0;
-    private static final String PICTURES_FOLDER = "pictures";
-//    private  File imgDirectory;
+    private static final int ZERO_OFFSET = 0;
 
     public DatabaseAccess(Context context){
         this.context = context;
@@ -43,7 +39,7 @@ public class DatabaseAccess {
             COLUMNS = dbHelper.getColumns();
             TABLE_NAME = dbHelper.getTableName();
         }catch (Exception e){
-            Toast.makeText(context,"Datenbank Fehler", Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"Datenbank Fehler", LENGTH_LONG).show();
         }
 
 //        // get path to image directory
@@ -195,11 +191,11 @@ public class DatabaseAccess {
 //        }
 //    }
 
-    /**
-     * Returns the picture of the trees id
-     * @param id
-     * @return
-     */
+//    /**
+//     * Returns the picture of the trees id
+//     * @param id
+//     * @return
+//     */
 //    public Bitmap getThumbnailById(int id){
 //        Bitmap thumbnail;
 //

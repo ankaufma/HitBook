@@ -1,11 +1,8 @@
 package htwg.de.hitbook;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
@@ -13,15 +10,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import htwg.de.hitbook.adapter.HistoryListItemAdapter;
 import htwg.de.hitbook.comparator.TreeComparator;
@@ -29,12 +21,13 @@ import htwg.de.hitbook.database.DatabaseAccess;
 import htwg.de.hitbook.model.FelledTree;
 
 /**
- * Created by Ecki on 14.12.2014.
+ * Created by Daniel Eckstein on 14.12.2014.
+ * Activity for showing a sorted history of all felled trees
  */
 public class HistoryActivity extends ActionBarActivity {
 
 
-    List<FelledTree> felledTrees = new ArrayList<FelledTree>();
+    List<FelledTree> felledTrees = new ArrayList<>();
     DatabaseAccess dbAccess;
     ListView listView;
     Spinner spinnerSort;
@@ -71,7 +64,7 @@ public class HistoryActivity extends ActionBarActivity {
 
         // Init Spinner
         spinnerSort = (Spinner) findViewById(R.id.spinnerHistory);
-        List<String> spinnerItems = new ArrayList<String>();
+        List<String> spinnerItems = new ArrayList<>();
         // Selectable Options
         spinnerItems.add(getString(R.string.s_optn_date));
         spinnerItems.add(getString(R.string.s_optn_date_inv));
@@ -79,7 +72,7 @@ public class HistoryActivity extends ActionBarActivity {
         spinnerItems.add(getString(R.string.s_optn_lumberjack_inv));
         spinnerItems.add(getString(R.string.s_optn_team));
         spinnerItems.add(getString(R.string.s_optn_team_inv));
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
                 context, android.R.layout.simple_spinner_item,spinnerItems);
         spinnerSort.setAdapter(arrayAdapter);
         spinnerSort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

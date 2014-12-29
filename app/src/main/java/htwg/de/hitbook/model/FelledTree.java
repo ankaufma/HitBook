@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 /**
  * Created by ankaufma on 27.11.2014.
+ *
  */
 public class FelledTree {
     private int id;

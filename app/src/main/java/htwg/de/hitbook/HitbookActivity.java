@@ -211,17 +211,13 @@ public class HitbookActivity extends ActionBarActivity {
 
     /**
      * Check whether all text fields are filled before taking a picture
-     * @return
+     * @return True if TextFields are filled
      */
     public boolean allTextFieldsFilled(){
-        if(     etLumberjack.getText().toString().isEmpty() ||
+        return !(etLumberjack.getText().toString().isEmpty() ||
                 etTeam.getText().toString().isEmpty() ||
                 etLength.getText().toString().isEmpty() ||
-                etDiameter.getText().toString().isEmpty())
-        {
-            return false;
-        }
-        else return true;
+                etDiameter.getText().toString().isEmpty());
     }
 
     private void setContentToLoadedPref(EditText tv, String pref){
@@ -308,7 +304,10 @@ public class HitbookActivity extends ActionBarActivity {
                 //Rename Full-Sized Picture to ID.jpg
                 File to = new File(EXTERNAL_STORAGE_FOLDER_PATH,felledTree.getIdAsString()+".jpg");
                 File from = new File(mCurrentPhotoPath);
-                from.renameTo(to);
+                if(!from.renameTo(to))
+                {
+                    Log.d("HitbookActivity","Error renaimng Full-sized Image");
+                }
                 Toast.makeText(context,getString(R.string.toast_tree_successful),Toast.LENGTH_LONG).show();
             }
             else {
@@ -326,7 +325,10 @@ public class HitbookActivity extends ActionBarActivity {
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = new File(EXTERNAL_STORAGE_FOLDER_PATH);
         if(!storageDir.exists()) {
-            storageDir.mkdir(); // Create Directory if it doesn't exist
+            // Create Directory if it doesn't exist
+            if(!storageDir.mkdir()){
+                Log.d("HitbookActivity","Error creating directory");
+            }
         }
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
