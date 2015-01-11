@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +32,7 @@ public class HistoryActivity extends ActionBarActivity {
     DatabaseAccess dbAccess;
     ListView listView;
     Spinner spinnerSort;
+    TextView tvVolume;
     Context context;
 
     @Override
@@ -61,17 +63,18 @@ public class HistoryActivity extends ActionBarActivity {
         });
 
 
-
         // Init Spinner
         spinnerSort = (Spinner) findViewById(R.id.spinnerHistory);
         List<String> spinnerItems = new ArrayList<>();
         // Selectable Options
-        spinnerItems.add(getString(R.string.s_optn_date));
         spinnerItems.add(getString(R.string.s_optn_date_inv));
-        spinnerItems.add(getString(R.string.s_optn_lumberjack));
+        spinnerItems.add(getString(R.string.s_optn_date));
         spinnerItems.add(getString(R.string.s_optn_lumberjack_inv));
-        spinnerItems.add(getString(R.string.s_optn_team));
+        spinnerItems.add(getString(R.string.s_optn_lumberjack));
         spinnerItems.add(getString(R.string.s_optn_team_inv));
+        spinnerItems.add(getString(R.string.s_optn_team));
+        spinnerItems.add(getString(R.string.s_optn_today_inv));
+        spinnerItems.add(getString(R.string.s_optn_today));
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
                 context, android.R.layout.simple_spinner_item,spinnerItems);
         spinnerSort.setAdapter(arrayAdapter);
@@ -88,6 +91,9 @@ public class HistoryActivity extends ActionBarActivity {
             }
         });
 
+        // Init TextView
+        tvVolume = (TextView) findViewById(R.id.textViewVolumeSum);
+
     }
 
     @Override
@@ -96,6 +102,51 @@ public class HistoryActivity extends ActionBarActivity {
         fillList();
     }
 
+    //
+
+    /**
+     * Sums up the volume of all trees in list
+     * @return The volume
+     */
+    private double calcSumVolume(List<FelledTree> felledTrees){
+        double volumeSum = 0;
+
+        for(int i=0; i<felledTrees.size(); i++){
+            volumeSum += felledTrees.get(i).getVolume();
+        }
+
+        return volumeSum;
+    }
+
+    /**
+     * Deletes all Felled trees from list, that don't match the date
+     * @param felledTrees List of the felled Trees
+     * @param date Date to match (Format: yyyy-MM-dd HH:mm:ss) time will be ignored
+     * @return New filtered list
+     */
+    private List<FelledTree> filterForDate(List<FelledTree> felledTrees, String date){
+
+        List<FelledTree> treesToDelete = new ArrayList<>();
+        FelledTree felledTree;
+
+        String treeDate;
+
+        for(int i=0; i<felledTrees.size(); i++){
+            felledTree = felledTrees.get(i);
+            treeDate = felledTree.getDate().substring(0,10);
+            if (!treeDate.equals(date.substring(0,10))){
+                treesToDelete.add(felledTree);
+            }
+        }
+
+        felledTrees.removeAll(treesToDelete);
+
+        return felledTrees;
+    }
+
+    /**
+     * Fills the listview depending on selected sorting option. Also sets the volume calculation
+     */
     public void fillList(){
 
         dbAccess.open();
@@ -107,7 +158,9 @@ public class HistoryActivity extends ActionBarActivity {
         // Sort List depending on choosen sorting method by the user
         if(sortingMethod.equals(getString(R.string.s_optn_date)) ||
                 sortingMethod.equals(getString(R.string.s_optn_lumberjack)) ||
-                sortingMethod.equals(getString(R.string.s_optn_team))){
+                sortingMethod.equals(getString(R.string.s_optn_team)) ||
+                sortingMethod.equals(getString(R.string.s_optn_today))
+                ){
             Collections.sort(felledTrees, new TreeComparator(TreeComparator.SORT_OPTION_DATE_NEW_OLD));
 
             if (sortingMethod.equals(getString(R.string.s_optn_lumberjack))){
@@ -116,10 +169,15 @@ public class HistoryActivity extends ActionBarActivity {
             if (sortingMethod.equals(getString(R.string.s_optn_team))){
                 Collections.sort(felledTrees, new TreeComparator(TreeComparator.SORT_OPTION_TEAM_A_Z));
             }
+            if (sortingMethod.equals(getString(R.string.s_optn_today))){
+                felledTrees = filterForDate(felledTrees,DatabaseAccess.getDate());
+            }
         }
         if(sortingMethod.equals(getString(R.string.s_optn_date_inv)) ||
                 sortingMethod.equals(getString(R.string.s_optn_lumberjack_inv)) ||
-                sortingMethod.equals(getString(R.string.s_optn_team_inv))){
+                sortingMethod.equals(getString(R.string.s_optn_team_inv)) ||
+                sortingMethod.equals(getString(R.string.s_optn_today_inv))
+                ){
             Collections.sort(felledTrees, new TreeComparator(TreeComparator.SORT_OPTION_DATE_OLD_NEW));
 
             if (sortingMethod.equals(getString(R.string.s_optn_lumberjack_inv))){
@@ -128,11 +186,13 @@ public class HistoryActivity extends ActionBarActivity {
             if (sortingMethod.equals(getString(R.string.s_optn_team_inv))){
                 Collections.sort(felledTrees, new TreeComparator(TreeComparator.SORT_OPTION_TEAM_Z_A));
             }
+            if (sortingMethod.equals(getString(R.string.s_optn_today_inv))){
+                felledTrees = filterForDate(felledTrees,DatabaseAccess.getDate());
+            }
         }
 
-
+        // Add the sorted list to the list view
         HistoryListItemAdapter myAdapter = new HistoryListItemAdapter(context, R.layout.list_item_history, felledTrees);
-
         try {
             listView.setAdapter(myAdapter);
         }
@@ -140,6 +200,8 @@ public class HistoryActivity extends ActionBarActivity {
             Log.d("HistoryActivity","Error at setting Adapter");
         }
 
+        // Do Volume calculation
+        tvVolume.setText(String.format("%.2f", calcSumVolume(felledTrees)));
 
     }
 }

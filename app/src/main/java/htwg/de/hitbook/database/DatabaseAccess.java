@@ -31,6 +31,7 @@ public class DatabaseAccess {
     private static String[] COLUMNS;
     private static String TABLE_NAME;
     private static final int ZERO_OFFSET = 0;
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     public DatabaseAccess(Context context){
         this.context = context;
@@ -143,9 +144,6 @@ public class DatabaseAccess {
     public FelledTree createNewFelledTree(
             String lumberjack, String team, String areaDescription, String latitude, String longitude, double height, double diameter, Bitmap picture){
 
-        // get the actual date
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String date = sdf.format(new Date());
 
         // Prepare thumbnail for database
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -161,7 +159,7 @@ public class DatabaseAccess {
         cv.put(COLUMNS[5], longitude);
         cv.put(COLUMNS[6], height);
         cv.put(COLUMNS[7], diameter);
-        cv.put(COLUMNS[8], date);
+        cv.put(COLUMNS[8], getDate());
         cv.put(COLUMNS[9], byteArray);
 
         long insertId = db.insert("Felled_Trees",null,cv);
@@ -173,6 +171,15 @@ public class DatabaseAccess {
         //savePictureById(picture, (int) insertId);
 
         return CursorToFelledTree(cursor);
+    }
+
+    /**
+     * Get the actual date
+     * @return Date in format yyyy-MM-dd HH:mm:ss
+     */
+    public static String getDate(){
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+        return sdf.format(new Date());
     }
 
 //    private boolean savePictureById(Bitmap picture, int TreeId){

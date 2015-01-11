@@ -47,6 +47,7 @@ public class HistoryListItemAdapter extends ArrayAdapter<FelledTree> {
             view = layoutInflater.inflate(R.layout.list_item_history, null);
         }
 
+        // Load actual tree
         FelledTree felledTree = getItem(position);
 
         if(felledTree != null) {

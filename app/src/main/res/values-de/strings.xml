@@ -18,7 +18,7 @@
     <string name="history">Verlauf</string>
     <string name="tree_id">Baum-Id</string>
     <string name="felled_on">Gefällt am</string>
-    <string name="volume">Volumen</string>
+    <string name="volume">Festmeter</string>
     <string name="toast_gps_not_activated">GPS ist nicht eingeschaltet!</string>
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
@@ -29,9 +29,12 @@
     <string name="s_optn_date">Datum (aufsteigend)</string>
     <string name="s_optn_lumberjack">Holzfäller (aufsteigend)</string>
     <string name="s_optn_team">Team (aufsteigend)</string>
+    <string name="s_optn_today">Nur heute (aufsteigend)</string>
     <string name="s_optn_date_inv">Datum (fallend)</string>
     <string name="s_optn_lumberjack_inv">Holzfäller (fallend)</string>
     <string name="s_optn_team_inv">Team (fallend)</string>
+    <string name="s_optn_today_inv">Nur heute (fallend)</string>
     <string name="toast_tree_successful">Baum wurde erfolgreich angelegt</string>
+    <string name="volume_sum">Festmeter gesamt</string>
 
 </resources>

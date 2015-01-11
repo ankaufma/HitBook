@@ -25,7 +25,7 @@
     <string name="tree_id">Tree Id</string>
     <string name="felled_on">Felled on</string>
     <string name="volume">Volume</string>
-    <string name="si_volume">m^3</string>
+    <string name="si_volume">m³</string>
     <string name="preferences_file_key">preferences</string>
     <string name="toast_gps_not_activated">GPS is not activated!</string>
     <string name="Yes">yes</string>
@@ -38,9 +38,12 @@
     <string name="s_optn_date">Date (ascending)</string>
     <string name="s_optn_lumberjack">Lumberjack (ascending)</string>
     <string name="s_optn_team">Team (ascending)</string>
+    <string name="s_optn_today">Just today (ascending)</string>
     <string name="s_optn_date_inv">Date (falling)</string>
     <string name="s_optn_lumberjack_inv">Lumberjack (falling)</string>
     <string name="s_optn_team_inv">Team (falling)</string>
+    <string name="s_optn_today_inv">Just today (falling)</string>
     <string name="toast_tree_successful">New tree successfully created</string>
+    <string name="volume_sum">Volume sum</string>
 
 </resources>
