@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -74,15 +75,13 @@ public class HistoryDetailActivity extends ActionBarActivity {
         //Load image
         ivTreePic = (ImageView)findViewById(R.id.imageViewTreePic);
 
-        // Check for Full-Sized Image
-        File imgFile = new  File(HitbookActivity.EXTERNAL_STORAGE_FOLDER_PATH+felledTree.getIdAsString()+".jpg");
-        if(imgFile.exists()) {
-            // Add Image to View
-            ivTreePic.setImageBitmap(BitmapFactory.decodeFile(imgFile.getAbsolutePath()));
-        } else {
-            // Else use thumbnail
-            ivTreePic.setImageBitmap(felledTree.getThumbnail());
-        }
+        // use thumbnail
+        ivTreePic.setImageBitmap(felledTree.getThumbnail());
+
+//        else {
+//            // Else use thumbnail
+//            ivTreePic.setImageBitmap(felledTree.getThumbnail());
+//        }
         //dbAccess.open();
         //ivTreePic.setImageBitmap(dbAccess.getThumbnailById(id));
         //dbAccess.close();
@@ -129,6 +128,32 @@ public class HistoryDetailActivity extends ActionBarActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+
+        // use thumbnail
+        ivTreePic.setImageBitmap(felledTree.getThumbnail());
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        // Check for Full-Sized Image
+        File imgFile = new  File(HitbookActivity.EXTERNAL_STORAGE_FOLDER_PATH+felledTree.getIdAsString()+".jpg");
+        if(imgFile.exists()) {
+            // Add Image to View
+            try {
+                ivTreePic.setImageBitmap(BitmapFactory.decodeFile(imgFile.getAbsolutePath()));
+
+            }catch (Exception e){
+                Log.d("HistoryDetailActivity","Error loading high-res pic");
+            }
+        }
+
     }
 
 
