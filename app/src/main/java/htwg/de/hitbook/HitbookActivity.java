@@ -162,6 +162,7 @@ public class HitbookActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case (R.id.action_settings):
+                showSettings();
                 return true;
             case (R.id.map):
                 showMap();
@@ -172,6 +173,11 @@ public class HitbookActivity extends ActionBarActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void showSettings(){
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     public void showHistory(){

@@ -36,5 +36,10 @@
     <string name="s_optn_today_inv">Nur heute (fallend)</string>
     <string name="toast_tree_successful">Baum wurde erfolgreich angelegt</string>
     <string name="volume_sum">Festmeter gesamt</string>
+    <string name="delete_all_data_btn">Alle Daten löschen</string>
+    <string name="delte_all_data">Diese Schaltfäche löscht alle Daten aus der Datenbank</string>
+    <string name="delete_all_alert_title">Alle Bäume löschen?</string>
+    <string name="delete_all_alert_message">Alle Bäume werden aus der Datenbank entfernt!</string>
+    <string name="toast_all_data_deleted">Alle Bäume wurden gelöscht.</string>
 
 </resources>

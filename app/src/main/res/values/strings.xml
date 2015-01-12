@@ -45,5 +45,11 @@
     <string name="s_optn_today_inv">Just today (falling)</string>
     <string name="toast_tree_successful">New tree successfully created</string>
     <string name="volume_sum">Volume sum</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="delete_all_data_btn">Delete all data</string>
+    <string name="delte_all_data">This button deletes all the tress from database</string>
+    <string name="delete_all_alert_title">Delete all Trees?</string>
+    <string name="delete_all_alert_message">All Trees will be deleted from database!</string>
+    <string name="toast_all_data_deleted">All trees have been deleted.</string>
 
 </resources>
