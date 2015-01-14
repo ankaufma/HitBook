@@ -1,6 +1,5 @@
 package htwg.de.hitbook;
 
-import android.bluetooth.*;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,15 +8,12 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.hardware.Camera;
 import android.location.Location;
 import android.media.ExifInterface;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -46,11 +42,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.UUID;
 
 import htwg.de.hitbook.database.DatabaseAccess;
 import htwg.de.hitbook.model.FelledTree;
@@ -357,8 +350,8 @@ public class HitbookActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
-            // Change picture rotation
-            //changePictureRotation();
+            // Change picture rotation and compresses it
+            rotateAndResamplePicture();
 
             // get Thumbnail of the image
             thumbnail = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(mCurrentPhotoPath),
@@ -387,10 +380,16 @@ public class HitbookActivity extends ActionBarActivity {
         }
     }
 
-    private void changePictureRotation(){
+    private void rotateAndResamplePicture(){
         try {
             ExifInterface exif = new ExifInterface(mCurrentPhotoPath);
             int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,ExifInterface.ORIENTATION_NORMAL);
+
+            // Resample picture
+            BitmapFactory.Options bfOptions = new BitmapFactory.Options();
+            bfOptions.inSampleSize = 4;
+            Bitmap oldBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath,bfOptions);
+
             // Convert to degrees
             if (rotation == ExifInterface.ORIENTATION_ROTATE_90) { rotation = 90; }
             else if (rotation == ExifInterface.ORIENTATION_ROTATE_180) {  rotation = 180; }
@@ -399,15 +398,21 @@ public class HitbookActivity extends ActionBarActivity {
             Matrix matrix = new Matrix();
             if (rotation != 0f) {matrix.preRotate(rotation);}
 
-            Bitmap adjustedBitmap = Bitmap.createBitmap(BitmapFactory.decodeFile(mCurrentPhotoPath), 0, 0, 1000, 800, matrix, true);
+            Bitmap adjustedBitmap = Bitmap.createBitmap(
+                    oldBitmap, 0, 0, oldBitmap.getWidth(), oldBitmap.getHeight(),matrix, true);
+
+            oldBitmap.recycle();
 
             // save Bitmap
             File file = new File(mCurrentPhotoPath);
             FileOutputStream fOut = new FileOutputStream(file);
 
-            adjustedBitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+            adjustedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
             fOut.flush();
             fOut.close();
+
+
+            adjustedBitmap.recycle();
 
         }catch (Exception e){
             Log.d("HitbookActivty","Rotation of picture not possible");
