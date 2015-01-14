@@ -8,7 +8,10 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.hardware.Camera;
 import android.location.Location;
+import android.media.ExifInterface;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
@@ -40,6 +43,7 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -306,7 +310,7 @@ public class HitbookActivity extends ActionBarActivity {
         tvLatitude.setText(
                 ((Double) location.getLatitude()).toString());
         tvLongitude.setText(
-                ((Double)location.getLongitude()).toString());
+                ((Double) location.getLongitude()).toString());
     }
 
     @Override
@@ -352,6 +356,10 @@ public class HitbookActivity extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+
+            // Change picture rotation
+            //changePictureRotation();
+
             // get Thumbnail of the image
             thumbnail = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(mCurrentPhotoPath),
                     THUMBSIZE, THUMBSIZE);
@@ -376,6 +384,33 @@ public class HitbookActivity extends ActionBarActivity {
             // Save last team and lumberjack
             saveContentToPref(etLumberjack,"lumberjack");
             saveContentToPref(etTeam,"team");
+        }
+    }
+
+    private void changePictureRotation(){
+        try {
+            ExifInterface exif = new ExifInterface(mCurrentPhotoPath);
+            int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,ExifInterface.ORIENTATION_NORMAL);
+            // Convert to degrees
+            if (rotation == ExifInterface.ORIENTATION_ROTATE_90) { rotation = 90; }
+            else if (rotation == ExifInterface.ORIENTATION_ROTATE_180) {  rotation = 180; }
+            else if (rotation == ExifInterface.ORIENTATION_ROTATE_270) {  rotation = 270; }
+            // Create rotation matrix
+            Matrix matrix = new Matrix();
+            if (rotation != 0f) {matrix.preRotate(rotation);}
+
+            Bitmap adjustedBitmap = Bitmap.createBitmap(BitmapFactory.decodeFile(mCurrentPhotoPath), 0, 0, 1000, 800, matrix, true);
+
+            // save Bitmap
+            File file = new File(mCurrentPhotoPath);
+            FileOutputStream fOut = new FileOutputStream(file);
+
+            adjustedBitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+            fOut.flush();
+            fOut.close();
+
+        }catch (Exception e){
+            Log.d("HitbookActivty","Rotation of picture not possible");
         }
     }
 
