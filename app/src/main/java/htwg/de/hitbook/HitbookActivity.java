@@ -1,5 +1,6 @@
 package htwg.de.hitbook;
 
+import android.bluetooth.*;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,9 @@ import android.location.Location;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -25,10 +29,24 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 import htwg.de.hitbook.database.DatabaseAccess;
 import htwg.de.hitbook.model.FelledTree;
@@ -53,8 +71,6 @@ public class HitbookActivity extends ActionBarActivity {
     Bitmap thumbnail;
     BroadcastReceiver broadcastReceiver;
     String mCurrentPhotoPath;
-
-
 
     //ImageView imageView;
     DatabaseAccess dbAccess;
@@ -83,7 +99,6 @@ public class HitbookActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         setContentView(R.layout.activity_hitbook);
 
@@ -125,8 +140,6 @@ public class HitbookActivity extends ActionBarActivity {
         // Check if Entry was already made
         setContentToLoadedPref(etLumberjack,"lumberjack");
         setContentToLoadedPref(etTeam,"team");
-
-
 
         // Add GPS Receiver for GPS Service
         broadcastReceiver = new BroadcastReceiver() {
@@ -170,6 +183,9 @@ public class HitbookActivity extends ActionBarActivity {
             case (R.id.history):
                 showHistory();
                 return true;
+            case (R.id.bluetooth):
+                doDiscover();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -190,6 +206,44 @@ public class HitbookActivity extends ActionBarActivity {
         intent.putExtra("Picture", thumbnail);
         startActivity(intent);
     }
+
+    public void doDiscover() {
+        Thread t = new Thread() {
+
+            public void run() {
+                Looper.prepare(); //For Preparing Message Pool for the child Thread
+                HttpClient client = new DefaultHttpClient();
+                HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000); //Timeout Limit
+                HttpResponse response;
+                JSONObject json = new JSONObject();
+
+                try {
+                    HttpPost post = new HttpPost("http://192.168.43.94:9000/addFelledTrees");
+                    json.put("lumberjack", "Ich bins... Juhu...");
+                    StringEntity se = new StringEntity( json.toString());
+                    se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+                    post.setEntity(se);
+                    response = client.execute(post);
+
+                    /*Checking response */
+                    if(response!=null){
+                        InputStream in = response.getEntity().getContent(); //Get the data in the entity
+                        Toast.makeText(context,in.toString(),Toast.LENGTH_LONG).show();
+                    }
+
+                } catch(Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(context,"ERROR",Toast.LENGTH_LONG).show();
+                }
+
+                Looper.loop(); //Loop in the message queue
+            }
+        };
+
+        t.start();
+        //mBluetoothAdapter.startDiscovery();
+    }
+    // Register the BroadcastReceiver
 
     /**
      * This function creates a new tree in the database by using the information the
@@ -367,5 +421,4 @@ public class HitbookActivity extends ActionBarActivity {
         // Restore state members from saved instance
         mCurrentPhotoPath = savedInstanceState.getString(PICTURE_PATH_NAME);
     }
-
 }

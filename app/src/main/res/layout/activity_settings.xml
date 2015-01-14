@@ -7,7 +7,7 @@
     tools:context="htwg.de.hitbook.SettingsActivity">
 
     <TextView
-        android:text="@string/delte_all_data"
+        android:text="@string/action_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -21,9 +21,20 @@
         android:layout_height="wrap_content"
         android:text="@string/delete_all_data_btn"
         android:id="@+id/buttonDeleteAllData"
-        android:layout_below="@id/textViewDelAllData"
-        android:layout_marginTop="10dp"
+        android:layout_below="@+id/button"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bluetooth Sync"
+        android:id="@+id/button"
+        android:onClick="onBluetooth"
+        android:layout_below="@+id/textViewDelAllData"
+        android:layout_alignLeft="@+id/buttonDeleteAllData"
+        android:layout_alignStart="@+id/buttonDeleteAllData"
+        android:layout_alignRight="@+id/buttonDeleteAllData"
+        android:layout_alignEnd="@+id/buttonDeleteAllData" />
 
 
 </RelativeLayout>

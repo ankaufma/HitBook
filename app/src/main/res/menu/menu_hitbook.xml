@@ -5,4 +5,5 @@
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/map" android:title="@string/map"></item>
     <item android:id="@+id/history" android:title="@string/history"></item>
+    <item android:id="@+id/bluetooth" android:title="@string/bluetooth"></item>
 </menu>
