@@ -44,7 +44,7 @@
 
             <ImageView
                 android:layout_width="fill_parent"
-                android:layout_height="200dp"
+                android:layout_height="350dp"
                 android:id="@+id/imageViewTreePic"
                 android:layout_below="@id/textViewID"
                 android:layout_alignParentLeft="true"
