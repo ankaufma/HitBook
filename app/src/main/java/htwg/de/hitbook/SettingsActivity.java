@@ -91,6 +91,7 @@ public class SettingsActivity extends ActionBarActivity {
 
     public void onBluetooth(View btn) {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        BluetoothDevice bd = null;
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivity(enableBtIntent);
@@ -101,8 +102,13 @@ public class SettingsActivity extends ActionBarActivity {
             for (BluetoothDevice device : pairedDevices) {
                 // Add the name and address to an array adapter to show in a ListView
                 Log.d("Settings", device.getName() + " " + device.getAddress());
+                if(device.getAddress() == "10:3B:59:F3:2B:D2") {
+                    bd = device;
+                }
             }
         }
+        new AcceptThread().run();
+        new ConnectThread(bd).run();
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mReceiver, filter);
     }
