@@ -32,6 +32,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -42,18 +44,23 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import htwg.de.hitbook.database.DatabaseAccess;
 import htwg.de.hitbook.model.FelledTree;
+import htwg.de.hitbook.model.JSONFelledTree;
 import htwg.de.hitbook.service.GPSManager;
 
 
@@ -187,8 +194,8 @@ public class HitbookActivity extends ActionBarActivity {
             case (R.id.history):
                 showHistory();
                 return true;
-            case (R.id.bluetooth):
-                doDiscover();
+            case (R.id.ServerSync):
+                serverSync();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -211,7 +218,7 @@ public class HitbookActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-    public void doDiscover() {
+    public void serverSync() {
         Thread t = new Thread() {
 
             public void run() {
@@ -219,25 +226,38 @@ public class HitbookActivity extends ActionBarActivity {
                 HttpClient client = new DefaultHttpClient();
                 HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000); //Timeout Limit
                 HttpResponse response;
-                JSONObject json = new JSONObject();
-
+                Gson gson = new Gson();
+                DatabaseAccess dbAccess = new DatabaseAccess(context);
+                dbAccess.open();
+                List<FelledTree> felledTrees = dbAccess.getAllFelledTrees();
+                dbAccess.close();
+                ArrayList<JSONFelledTree> jsonFT = new ArrayList<JSONFelledTree>();
+                for (FelledTree ft : felledTrees) {
+                    String image = getEncoded64ImageStringFromBitmap(ft.getThumbnail());
+                    jsonFT.add(JSONFelledTree.getJSONFelledTree(ft, image));
+                }
                 try {
                     HttpPost post = new HttpPost("http://192.168.43.94:9000/addFelledTrees");
-                    json.put("lumberjack", "Ich bins... Juhu...");
-                    StringEntity se = new StringEntity( json.toString());
+                    Log.d("JSON", gson.toJsonTree(jsonFT).toString());
+                    StringEntity se = new StringEntity(gson.toJsonTree(jsonFT).toString());
                     se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
                     post.setEntity(se);
                     response = client.execute(post);
 
                     /*Checking response */
-                    if(response!=null){
+                    if (response != null) {
                         InputStream in = response.getEntity().getContent(); //Get the data in the entity
-                        Toast.makeText(context,in.toString(),Toast.LENGTH_LONG).show();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                        String line = null;
+                        while ((line = reader.readLine()) != null) {
+                            Toast.makeText(context, line.toString(), Toast.LENGTH_LONG).show();
+                        }
+
                     }
 
-                } catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(context,"ERROR",Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "ERROR", Toast.LENGTH_LONG).show();
                 }
 
                 Looper.loop(); //Loop in the message queue
@@ -245,7 +265,6 @@ public class HitbookActivity extends ActionBarActivity {
         };
 
         t.start();
-        //mBluetoothAdapter.startDiscovery();
     }
     // Register the BroadcastReceiver
 
