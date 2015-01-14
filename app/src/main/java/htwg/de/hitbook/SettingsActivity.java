@@ -36,7 +36,7 @@ public class SettingsActivity extends ActionBarActivity {
     Button btnDelAll;
     DatabaseAccess dbAccess;
     Context context;
-    BluetoothAdapter mBluetoothAdapter;
+    BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +90,6 @@ public class SettingsActivity extends ActionBarActivity {
     }
 
     public void onBluetooth(View btn) {
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         BluetoothDevice bd = null;
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -102,13 +101,14 @@ public class SettingsActivity extends ActionBarActivity {
             for (BluetoothDevice device : pairedDevices) {
                 // Add the name and address to an array adapter to show in a ListView
                 Log.d("Settings", device.getName() + " " + device.getAddress());
-                if(device.getAddress() == "10:3B:59:F3:2B:D2") {
+                if(device.getAddress().equals("10:3B:59:F3:2B:D2")) {
+                    Log.d("Settings", "Ecki found");
                     bd = device;
                 }
             }
         }
-        new AcceptThread().run();
-        new ConnectThread(bd).run();
+        new AcceptThread().start();
+        new ConnectThread(bd).start();
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mReceiver, filter);
     }
