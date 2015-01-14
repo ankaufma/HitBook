@@ -30,6 +30,7 @@ public class HistoryDetailActivity extends ActionBarActivity {
     TextView tvLumber, tvTheTeam;
     TextView tvTreeDia, tvTreLen, tvVolume;
     TextView tvArea;
+    TextView tvLat, tvLon;
     ImageView ivTreePic;
     ImageButton ibDelete;
     Integer id;
@@ -57,6 +58,8 @@ public class HistoryDetailActivity extends ActionBarActivity {
         tvTreLen = (TextView) findViewById(R.id.textViewTreeLen);
         tvVolume = (TextView) findViewById(R.id.textViewVolume);
         tvArea = (TextView) findViewById(R.id.textViewTreeArea);
+        tvLat = (TextView) findViewById(R.id.textViewLatData);
+        tvLon = (TextView) findViewById(R.id.textViewLonData);
         ibDelete = (ImageButton) findViewById(R.id.imageButtonDelete);
         dbAccess.open();
         this.felledTree = dbAccess.getFelledTreeById(id);
@@ -71,6 +74,8 @@ public class HistoryDetailActivity extends ActionBarActivity {
         tvTreLen.setText(((Double)felledTree.getHeight()).toString());
         tvVolume.setText(felledTree.getVolumeAsString());
         tvArea.setText(felledTree.getAreaDescription());
+        tvLat.setText(felledTree.getLatitude());
+        tvLon.setText(felledTree.getLongitude());
 
         //Load image
         ivTreePic = (ImageView)findViewById(R.id.imageViewTreePic);
