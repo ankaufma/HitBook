@@ -13,13 +13,18 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import htwg.de.hitbook.database.DatabaseAccess;
+import htwg.de.hitbook.model.FelledTree;
 import htwg.de.hitbook.service.GPSTracker;
 
 
 public class MapActivity extends ActionBarActivity {
     GoogleMap map;
     GPSTracker gps;
-    Bitmap bmp;
+    DatabaseAccess dba = new DatabaseAccess(this);
     double latitude;
     double longitude;
 
@@ -27,36 +32,28 @@ public class MapActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        bmp = getIntent().getExtras().getParcelable("Picture");
      //   gps = new GPSTracker(this);
         gps = new GPSTracker(this);
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         map = mapFragment.getMap();
         map.setMyLocationEnabled(true);
-        while(!addTreeMarker()) addTreeMarker();
+        dba.open();
+        addMyMarkers(dba.getAllFelledTrees());
+        dba.close();
     }
 
-    private boolean addTreeMarker() {
-        if(gps.canGetLocation()) {
-            latitude = gps.getLatitude();
-            longitude = gps.getLongitude();
-            gps.stopUsingGPS();
-            if(bmp != null) {
-                map.addMarker(new MarkerOptions().
-                        position(new LatLng(latitude, longitude)).
-                        title("Felled Tree").
-                        icon(BitmapDescriptorFactory.fromBitmap(bmp)));
-            } else {
-                map.addMarker(new MarkerOptions().
-                        position(new LatLng(latitude, longitude)).
-                        title("Felled Tree"));
-            }
-            return true;
-        } else {
-            gps.showSettingsAlert();
-            return false;
+    private void addMyMarkers(List<FelledTree> thisFelledTrees) {
+        for(FelledTree ft: thisFelledTrees) {
+            map.addMarker(new MarkerOptions().
+                    position(new LatLng(Double.parseDouble(ft.getLatitude()), Double.parseDouble(ft.getLongitude()))).
+                    title(ft.getLumberjack() + " has felled that tree on " + ft.getDate() + " in " + ft.getAreaDescription()).
+                    icon(BitmapDescriptorFactory.fromBitmap(ft.getThumbnail())));
         }
+    }
+
+    private void removeMyMarkers() {
+        map.clear();
     }
 
     @Override
@@ -72,10 +69,34 @@ public class MapActivity extends ActionBarActivity {
         switch(item.getItemId()) {
             case (R.id.action_settings):
                 return true;
-            case (R.id.map):
+            case (R.id.justToday):
+                removeMyMarkers();
+                dba.open();
+                addMyMarkers(filterForDate(dba.getAllFelledTrees(),dba.getDate()));
+                dba.close();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private List<FelledTree> filterForDate(List<FelledTree> felledTrees, String date){
+
+        List<FelledTree> treesToDelete = new ArrayList<>();
+        FelledTree felledTree;
+
+        String treeDate;
+
+        for(int i=0; i<felledTrees.size(); i++){
+            felledTree = felledTrees.get(i);
+            treeDate = felledTree.getDate().substring(0,10);
+            if (!treeDate.equals(date.substring(0,10))){
+                treesToDelete.add(felledTree);
+            }
+        }
+
+        felledTrees.removeAll(treesToDelete);
+
+        return felledTrees;
     }
 }

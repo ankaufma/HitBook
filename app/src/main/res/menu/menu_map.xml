@@ -3,5 +3,5 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context="htwg.de.hitbook.MapActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
-    <item android:id="@+id/map" android:title="@string/map"></item>
+    <item android:id="@+id/justToday" android:title="@string/justToday"></item>
 </menu>

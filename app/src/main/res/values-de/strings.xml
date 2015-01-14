@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="justToday">Nur Heute</string>
     <string name="app_name">HitBook</string>
     <string name="bluetooth">Bluetooth</string>
     <string name="hello_world">Hallo Welt!</string>
