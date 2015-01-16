@@ -251,11 +251,61 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textViewLat"
+                android:text="@string/latitude"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/textViewVolumeText"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/textViewLatData"
+                android:text="@string/not_found"
+                android:textColor="@color/wallet_holo_blue_light"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_toRightOf="@id/textViewLat"
+                android:layout_toEndOf="@id/textViewLat"
+                android:layout_alignBottom="@id/textViewLat"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textViewLon"
+                android:text="@string/longitude"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/textViewLat"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/textViewLonData"
+                android:text="@string/not_found"
+                android:textColor="@color/wallet_holo_blue_light"
+                android:layout_alignLeft="@id/textViewLatData"
+                android:layout_alignStart="@id/textViewLatData"
+                android:layout_alignBottom="@id/textViewLon"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/textViewTreeAreaText"
                 android:text="@string/area_description"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@id/textViewVolumeText"
+                android:layout_below="@id/textViewLon"
                 />
 
             <TextView

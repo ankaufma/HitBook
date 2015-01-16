@@ -377,7 +377,7 @@ public class HitbookActivity extends ActionBarActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
             // Change picture rotation
-            //changePictureRotation();
+            rotateAndResamplePicture();
 
             // get Thumbnail of the image
             thumbnail = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(mCurrentPhotoPath),
@@ -406,10 +406,16 @@ public class HitbookActivity extends ActionBarActivity {
         }
     }
 
-    private void changePictureRotation(){
+    private void rotateAndResamplePicture(){
         try {
             ExifInterface exif = new ExifInterface(mCurrentPhotoPath);
             int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,ExifInterface.ORIENTATION_NORMAL);
+
+            // Resample picture
+            BitmapFactory.Options bfOptions = new BitmapFactory.Options();
+            bfOptions.inSampleSize = 4;
+            Bitmap oldBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath,bfOptions);
+
             // Convert to degrees
             if (rotation == ExifInterface.ORIENTATION_ROTATE_90) { rotation = 90; }
             else if (rotation == ExifInterface.ORIENTATION_ROTATE_180) {  rotation = 180; }
@@ -418,15 +424,21 @@ public class HitbookActivity extends ActionBarActivity {
             Matrix matrix = new Matrix();
             if (rotation != 0f) {matrix.preRotate(rotation);}
 
-            Bitmap adjustedBitmap = Bitmap.createBitmap(BitmapFactory.decodeFile(mCurrentPhotoPath), 0, 0, 1000, 800, matrix, true);
+            Bitmap adjustedBitmap = Bitmap.createBitmap(
+                    oldBitmap, 0, 0, oldBitmap.getWidth(), oldBitmap.getHeight(),matrix, true);
+
+            oldBitmap.recycle();
 
             // save Bitmap
             File file = new File(mCurrentPhotoPath);
             FileOutputStream fOut = new FileOutputStream(file);
 
-            adjustedBitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+            adjustedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
             fOut.flush();
             fOut.close();
+
+
+            adjustedBitmap.recycle();
 
         }catch (Exception e){
             Log.d("HitbookActivty","Rotation of picture not possible");
