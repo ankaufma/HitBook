@@ -2,6 +2,8 @@ package htwg.de.hitbook.model;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 /**
  * Created by ankaufma on 27.11.2014.
  *

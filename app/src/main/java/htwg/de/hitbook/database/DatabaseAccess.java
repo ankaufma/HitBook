@@ -173,6 +173,38 @@ public class DatabaseAccess {
         return CursorToFelledTree(cursor);
     }
 
+    public FelledTree createNewFelledTreeWithDate(
+            String lumberjack, String team, String areaDescription, String latitude, String longitude, double height, double diameter, Bitmap picture, String date){
+
+
+        // Prepare thumbnail for database
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        picture.compress(Bitmap.CompressFormat.PNG, 100, bos);
+        byte[] byteArray = bos.toByteArray();
+
+        ContentValues cv = new ContentValues();
+
+        cv.put(COLUMNS[1], lumberjack);
+        cv.put(COLUMNS[2], team);
+        cv.put(COLUMNS[3], areaDescription);
+        cv.put(COLUMNS[4], latitude);
+        cv.put(COLUMNS[5], longitude);
+        cv.put(COLUMNS[6], height);
+        cv.put(COLUMNS[7], diameter);
+        cv.put(COLUMNS[8], date);
+        cv.put(COLUMNS[9], byteArray);
+
+        long insertId = db.insert("Felled_Trees",null,cv);
+
+        Cursor cursor = db.query(TABLE_NAME,COLUMNS,"ID ="+insertId,null,null,null,null);
+        cursor.moveToFirst();
+
+        //Save picture of tree
+        //savePictureById(picture, (int) insertId);
+
+        return CursorToFelledTree(cursor);
+    }
+
     /**
      * Get the actual date
      * @return Date in format yyyy-MM-dd HH:mm:ss

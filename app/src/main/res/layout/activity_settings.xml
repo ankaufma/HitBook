@@ -21,13 +21,13 @@
         android:layout_height="wrap_content"
         android:text="@string/delete_all_data_btn"
         android:id="@+id/buttonDeleteAllData"
-        android:layout_below="@+id/button"
+        android:layout_below="@+id/btconnect"
         android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bluetooth Sync"
+        android:text="Bluetooth Server"
         android:id="@+id/button"
         android:onClick="onBluetooth"
         android:layout_below="@+id/textViewDelAllData"
@@ -35,6 +35,15 @@
         android:layout_alignStart="@+id/buttonDeleteAllData"
         android:layout_alignRight="@+id/buttonDeleteAllData"
         android:layout_alignEnd="@+id/buttonDeleteAllData" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hole Bluetooth Daten"
+        android:id="@+id/btconnect"
+        android:onClick="onConnect"
+        android:layout_below="@+id/button"
+        android:layout_alignLeft="@+id/buttonDeleteAllData"
+        android:layout_alignStart="@+id/buttonDeleteAllData" />
 
 
 </RelativeLayout>

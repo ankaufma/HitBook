@@ -11,6 +11,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
@@ -22,21 +24,33 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import htwg.de.hitbook.database.DatabaseAccess;
+import htwg.de.hitbook.model.FelledTree;
+import htwg.de.hitbook.model.JSONFelledTree;
 
 
 public class SettingsActivity extends ActionBarActivity {
 
     Button btnDelAll;
     DatabaseAccess dbAccess;
-    Context context;
+    static Context context;
     BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    ObjectInput in = null;
+    Boolean socketOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,16 +115,28 @@ public class SettingsActivity extends ActionBarActivity {
             for (BluetoothDevice device : pairedDevices) {
                 // Add the name and address to an array adapter to show in a ListView
                 Log.d("Settings", device.getName() + " " + device.getAddress());
-                if(device.getAddress().equals("10:3B:59:F3:2B:D2")) {
-                    Log.d("Settings", "Ecki found");
-                    bd = device;
-                }
+                bd = device;
             }
         }
-        new AcceptThread().start();
-        new ConnectThread(bd).start();
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        registerReceiver(mReceiver, filter);
+        if(!socketOpen) {
+            socketOpen = true;
+            new AcceptThread().start();
+        } else {
+            Toast.makeText(context, "Server bereits geöffnet!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void onConnect(View btn) {
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+        if (pairedDevices.size() > 0) {
+            // Loop through paired devices
+            for (BluetoothDevice device : pairedDevices) {
+                // Add the name and address to an array adapter to show in a ListView
+                    new ConnectThread(device).start();
+            }
+        } else {
+            Toast.makeText(context, "Keine Geräte gefunden. Bitte über die Systemeinstellungen mit einem Bluetooth Gerät koppeln!", Toast.LENGTH_LONG).show();
+        }
     }
 
 
@@ -139,28 +165,12 @@ public class SettingsActivity extends ActionBarActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mReceiver);
     }
 
     public static final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Log.d("HANDLER", msg.toString());
-        }
-    };
-
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            Log.d("Setting Activity: ", "received s.th...");
-            String action = intent.getAction();
-            // When discovery finds a device
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                // Get the BluetoothDevice object from the Intent
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                // Add the name and address to an array adapter to show in a ListView
-                Log.d("Setting Activity: ", device.getName() + " MAC-Address" + device.getAddress());
-                //new ConnectThread(device).run();
-            }
+            processSendedData(msg);
         }
     };
 
@@ -172,6 +182,7 @@ public class SettingsActivity extends ActionBarActivity {
             // because mmServerSocket is final
             BluetoothServerSocket tmp = null;
             try {
+                Toast.makeText(context,"ServerSocket startet",Toast.LENGTH_LONG).show();
                 // MY_UUID is the app's UUID string, also used by the client code
                 tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("Hello World", DEFAULT_UUID);
             } catch (IOException e) { }
@@ -183,15 +194,38 @@ public class SettingsActivity extends ActionBarActivity {
             // Keep listening until exception occurs or a socket is returned
             while (true) {
                 try {
+                    Log.d("AcceptThread", "Trying to accept a connection!");
                     socket = mmServerSocket.accept();
                 } catch (IOException e) {
+                    Log.d("AcceptThread", "Nothing found...");
                     break;
                 }
                 // If a connection was accepted
                 if (socket != null) {
+                    Log.d("AcceptThread", "Got a Socket");
                     // Do work to manage the connection (in a separate thread)
-                    new ConnectedThread(socket);
+                    GetFelledTree gft = new GetFelledTree(socket);
+                    DatabaseAccess dba = new DatabaseAccess(context);
+                    dba.open();
+                        for(FelledTree ft: dba.getAllFelledTrees()) {
+                            gft.write(prepareData(JSONFelledTree.getJSONFelledTreeWithoutImage(ft)));
+                            try {
+                                sleep(500);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    dba.close();
                     try {
+                        runOnUiThread(new Runnable(){
+                            @Override
+                            public void run() {
+                                Toast.makeText(context,
+                                        "Synchronisation abgeschlossen! Server wird beendet...",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        socketOpen=false;
                         mmServerSocket.close();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -215,6 +249,7 @@ public class SettingsActivity extends ActionBarActivity {
         private final BluetoothDevice mmDevice;
 
         public ConnectThread(BluetoothDevice device) {
+            Log.d("ConnectThread", "Trying to connect");
             // Use a temporary object that is later assigned to mmSocket,
             // because mmSocket is final
             BluetoothSocket tmp = null;
@@ -238,15 +273,21 @@ public class SettingsActivity extends ActionBarActivity {
                 // until it succeeds or throws an exception
                 mmSocket.connect();
             } catch (IOException connectException) {
-                // Unable to connect; close the socket and get out
-                Log.d("ConnectThread", "An error occured during connecting...");
+                runOnUiThread(new Runnable(){
+                    @Override
+                    public void run() {
+                        Toast.makeText(context,
+                                "Paired mit " +mmDevice.getName()+ " aber kein BT-ServerSocket geöffnet",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
                 try {
                     mmSocket.close();
                 } catch (IOException closeException) { }
                 return;
             }
-            mHandler.obtainMessage(0,mmSocket);
             // Do work to manage the connection (in a separate thread)
+            new GetFelledTree(mmSocket).start();
         }
 
         /** Will cancel an in-progress connection, and close the socket */
@@ -257,12 +298,13 @@ public class SettingsActivity extends ActionBarActivity {
         }
     }
 
-    private class ConnectedThread extends Thread {
+    private class GetFelledTree extends Thread {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
 
-        public ConnectedThread(BluetoothSocket socket) {
+        public GetFelledTree(BluetoothSocket socket) {
+            Log.d("GetFelledTree", "läuft...");
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
@@ -272,26 +314,24 @@ public class SettingsActivity extends ActionBarActivity {
             try {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
-            } catch (IOException e) { }
+            } catch (IOException e) {
+            }
 
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
         }
 
         public void run() {
-            Log.d("Connected", "Test");
-            byte[] buffer = new byte[1024];  // buffer store for the stream
-            int bytes; // bytes returned from read()
-
+            Log.d("Connected", "Is Running");
+            byte[] buffer = new byte[1 * 1024];  // buffer store for the stream
+            int bytes = 0; // bytes returned from read()
             // Keep listening to the InputStream until an exception occurs
             while (true) {
                 try {
-                    // Read from the InputStream
                     bytes = mmInStream.read(buffer);
-                    // Send the obtained bytes to the UI activity
-                    mHandler.obtainMessage(1, bytes, -1, buffer)
-                            .sendToTarget();
+                    mHandler.obtainMessage(1, bytes, -1, buffer).sendToTarget();
                 } catch (IOException e) {
+                    Log.d("End of String:", "End of String:");
                     break;
                 }
             }
@@ -311,4 +351,103 @@ public class SettingsActivity extends ActionBarActivity {
             } catch (IOException e) { }
         }
     }
+
+    public byte[] prepareData(JSONFelledTree jft) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream outStream = null;
+        byte[] sendBytes = null;
+        try {
+            try {
+                outStream = new ObjectOutputStream(bos);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                outStream.writeObject(jft);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            sendBytes = bos.toByteArray();
+        } finally {
+            try {
+                if (outStream != null) {
+                    outStream.flush();
+                    outStream.close();
+                }
+            } catch (IOException ex) {
+                // ignore close exception
+            }
+            try {
+                bos.close();
+            } catch (IOException ex) {
+                // ignore close exception
+            }
+        }
+        return sendBytes;
+    }
+
+    private static void processSendedData(Message msg) {
+        JSONFelledTree jsft = null;
+        ByteArrayInputStream bis = new ByteArrayInputStream((byte[]) msg.obj);
+        ObjectInput in = null;
+        try {
+            try {
+                in = new ObjectInputStream(bis);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                jsft = (JSONFelledTree)in.readObject();
+                Log.d("Lumberjack", jsft.getLumberjack());
+                persist(jsft);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                Log.d("IOException", "Something went wrong...");
+            }
+        } finally {
+            try {
+                bis.close();
+            } catch (IOException ex) {
+                // ignore close exception
+            }
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                // ignore close exception
+            }
+        }
+    }
+
+    private static void persist (JSONFelledTree ft) {
+        DatabaseAccess dba = new DatabaseAccess(context);
+        dba.open();
+        Boolean updatable = true;
+        for(FelledTree db: dba.getAllFelledTrees()) {
+            if(db.getDate().equals(ft.getDate())) {
+                updatable = false;
+            }
+        }
+        if(updatable) {
+            dba.createNewFelledTreeWithDate(
+                    ft.getLumberjack(),
+                    ft.getTeam(),
+                    ft.getAreaDescription(),
+                    ft.getLatitude(),
+                    ft.getLongitude(),
+                    ft.getHeight(),
+                    ft.getDiameter(),
+                    Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888),
+                    ft.getDate()
+            );
+            Toast.makeText(context, "Synchronisation abgeschlossen. Sag Danke!", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(context, "Daten bereits snychron.", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+
 }

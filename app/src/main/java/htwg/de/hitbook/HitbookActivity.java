@@ -235,8 +235,7 @@ public class HitbookActivity extends ActionBarActivity {
                 dbAccess.close();
                 ArrayList<JSONFelledTree> jsonFT = new ArrayList<JSONFelledTree>();
                 for (FelledTree ft : felledTrees) {
-                    String image = getEncoded64ImageStringFromBitmap(ft.getThumbnail());
-                    jsonFT.add(JSONFelledTree.getJSONFelledTree(ft, image));
+                    jsonFT.add(JSONFelledTree.getJSONFelledTree(ft));
                 }
                 try {
                     HttpPost post = new HttpPost("http://192.168.43.94:9000/addFelledTrees");
@@ -267,15 +266,6 @@ public class HitbookActivity extends ActionBarActivity {
         };
 
         t.start();
-    }
-
-    public String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
-        byte[] byteFormat = stream.toByteArray();
-        // get the base 64 string
-        String imgString = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
-        return imgString;
     }
 
     /**
