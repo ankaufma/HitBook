@@ -246,14 +246,10 @@ public class HitbookActivity extends ActionBarActivity {
                     response = client.execute(post);
 
                     /*Checking response */
-                    if (response != null) {
-                        InputStream in = response.getEntity().getContent(); //Get the data in the entity
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                        String line = null;
-                        while ((line = reader.readLine()) != null) {
-                            Toast.makeText(context, line.toString(), Toast.LENGTH_LONG).show();
-                        }
-
+                    if (response.getStatusLine().getStatusCode() == 200) {
+                        Toast.makeText(context, "Erfolgreich", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(context, "Fehler beim Datentransfer...", Toast.LENGTH_LONG).show();
                     }
 
                 } catch (Exception e) {
