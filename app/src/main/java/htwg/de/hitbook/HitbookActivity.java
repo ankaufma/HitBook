@@ -249,7 +249,7 @@ public class HitbookActivity extends ActionBarActivity {
                     if (response.getStatusLine().getStatusCode() == 200) {
                         Toast.makeText(context, "Erfolgreich", Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(context, "Fehler beim Datentransfer...", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Fehler beim Datentransfer..." + response.getStatusLine().getStatusCode(), Toast.LENGTH_LONG).show();
                     }
 
                 } catch (Exception e) {
