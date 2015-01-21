@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
@@ -439,7 +440,7 @@ public class SettingsActivity extends ActionBarActivity {
                     ft.getLongitude(),
                     ft.getHeight(),
                     ft.getDiameter(),
-                    Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888),
+                    BitmapFactory.decodeResource(context.getResources(), R.drawable.tree),
                     ft.getDate()
             );
             Toast.makeText(context, "Synchronisation abgeschlossen. Sag Danke!", Toast.LENGTH_LONG).show();
